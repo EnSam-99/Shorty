@@ -8,7 +8,7 @@ namespace Shorty.Controllers
     [ApiController]
     public class TestController(TestRepository testRepository) : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("create-table")]
         public async Task<IActionResult> TestAction(int i)
         {
             await testRepository.TestAsync(i);
