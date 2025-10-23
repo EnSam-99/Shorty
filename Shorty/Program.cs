@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDbContext<AppDbContext>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -16,6 +18,8 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSingleton<TestRepository>();
 builder.Services.AddControllers();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
