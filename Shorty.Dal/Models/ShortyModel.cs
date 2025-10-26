@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal.Models;
 
-public class Shorty
+public class ShortyModel
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     [Required]
     public string Url { get; set; } = string.Empty;
     [Required]
     public string ShortUrl { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; } = DateTime.UtcNow.Date;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    [ForeignKey("User")]
+    [ForeignKey(nameof(User))]
     public Guid UserId { get; set; }
+    public User? User { get; set;  }
 }

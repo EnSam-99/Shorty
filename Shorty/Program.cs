@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal;
@@ -14,9 +15,11 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
 });
 
-builder.Services.AddSingleton<TestRepository>();
+builder.Services.AddScoped<ShortyUrlRepository>();
+builder.Services.AddScoped<UserUrlRepository>();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

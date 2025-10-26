@@ -9,12 +9,12 @@ namespace Shorty.Dal.Models;
 
 public class User
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     [Required]
     public string Name { get; set; } = string.Empty;
     [Required]
     public string Email { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; } = DateTime.UtcNow.Date;
+    public DateTime CreatedAt { get; } = DateTime.UtcNow;
 
-    List<Shorty> Shorties { get; set; } = new();
+   public List<ShortyModel> Shorties { get; set; } = new();
 }
