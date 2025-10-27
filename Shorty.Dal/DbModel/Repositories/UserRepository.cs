@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shorty.Dal.Db;
 using Shorty.Dal.Models;
 
-namespace Shorty.Dal;
+namespace Shorty.Dal.DbModel.Repositories;
 
-public class UserRepository
+public class UserRepository: IUserRepository<User>
 {
 
     readonly AppDbContext _db;
@@ -14,8 +15,7 @@ public class UserRepository
         _db = db;
     }
 
-
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<IEnumerable<User>> GetAllUsersAsync()
     {
         return await _db.Users
         .OrderByDescending(u => u.CreatedAt)
@@ -32,4 +32,13 @@ public class UserRepository
         await _db.SaveChangesAsync();
     }
 
+    public Task UpdateUserAsync(User user, Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteUserAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal;
+using Shorty.Dal.DbModel.Repositories;
 using Shorty.Dal.Models;
 using Shorty.Models;
 

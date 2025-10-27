@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
-using Shorty.Dal;
+using Shorty.Dal.Db;
+using Shorty.Dal.DbModel.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

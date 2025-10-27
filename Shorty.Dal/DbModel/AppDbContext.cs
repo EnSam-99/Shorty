@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Shorty.Dal.Models;
 
-namespace Shorty.Dal;
+namespace Shorty.Dal.Db;
 
 public class AppDbContext : DbContext
 {
