@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Shorty.Dal.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +17,15 @@ public class ShortyUrlRepository
         _context = context;
     }
 
-
+    public async Task AddShortyAsync(ShortyModel shortyModel)
+    {
+        await _context.Shorties.AddAsync(shortyModel);
+        await _context.SaveChangesAsync();
+    }
+   
+    public async Task<List<ShortyModel>> GetAllShortyAsync()
+    {
+        return await _context.Shorties.OrderByDescending(s => s.Id).ToListAsync();
+    }
 
 }

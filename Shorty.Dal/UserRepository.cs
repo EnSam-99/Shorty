@@ -4,12 +4,12 @@ using Shorty.Dal.Models;
 
 namespace Shorty.Dal;
 
-public class UserUrlRepository
+public class UserRepository
 {
 
     readonly AppDbContext _db;
 
-    public UserUrlRepository(AppDbContext db)
+    public UserRepository(AppDbContext db)
     {
         _db = db;
     }
@@ -18,8 +18,8 @@ public class UserUrlRepository
     public async Task<List<User>> GetAllUsersAsync()
     {
         return await _db.Users
-  .OrderByDescending(u => u.CreatedAt)
-  .ToListAsync();
+        .OrderByDescending(u => u.CreatedAt)
+        .ToListAsync();
 
     }
 

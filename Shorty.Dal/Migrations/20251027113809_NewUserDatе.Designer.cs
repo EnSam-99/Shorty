@@ -12,8 +12,8 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023165248_Shorty")]
-    partial class Shorty
+    [Migration("20251027113809_NewUserDatе")]
+    partial class NewUserDatе
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,16 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.ShortyModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("ShortUrl")
                         .IsRequired()
@@ -60,6 +65,11 @@ namespace Shorty.Dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -78,13 +88,20 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.ShortyModel", b =>
                 {
-                    b.HasOne("Shorty.Dal.Models.User", null)
-                        .WithMany()
+                    b.HasOne("Shorty.Dal.Models.User", "User")
+                        .WithMany("Shorties")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Models.User", b =>
+                {
+                    b.Navigation("Shorties");
                 });
 #pragma warning restore 612, 618
         }

@@ -52,7 +52,7 @@ public class AppDbContext : DbContext
             string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
                           "Username=neondb_owner;" +
                           "Password=npg_5jmasY6vLIRC;" +
-                          "Database=neondb;" +
+                          "Database=arsendb;" +
                           "SSL Mode=Require;" +
                           "Trust Server Certificate=true;" +
                           "Channel Binding=Require;";

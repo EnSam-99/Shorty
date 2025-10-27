@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<ShortyUrlRepository>();
-builder.Services.AddScoped<UserUrlRepository>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
