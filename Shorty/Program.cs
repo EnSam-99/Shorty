@@ -84,6 +84,6 @@ app.UseAuthorization();
 // Map endpoints
 app.MapControllers();
 app.MapBlazorHub();                     // Blazor Server
-app.MapFallbackToPage("/_Host");        // Fallback for Blazor pages
+//app.MapFallbackToPage("/_Host");        // Fallback for Blazor pages
 
 app.Run();
