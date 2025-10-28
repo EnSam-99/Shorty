@@ -1,9 +1,23 @@
 ﻿@page "/"
+@inject NavigationManager Nav
 
-<PageTitle>Home</PageTitle>
+<div class="container mt-5 text-center">
+    <h1>Welcome to Shorty!</h1>
+    <p class="lead">Your simple and secure URL shortener</p>
 
-<div>
-    Input URL
-    <input />
-    <button>Create your shorty link</button>
+    <div class="mt-4">
+        <button class="btn btn-primary mx-2" @onclick="GoRegister">Register</button>
+        <button class="btn btn-success mx-2" @onclick="GoLogin">Login</button>
+        <button class="btn btn-info mx-2" @onclick="GoUrlShortener">Shorten URL</button>
+    </div>
+
+    <div class="mt-5">
+        <p><small>After login, you can shorten URLs and see all your stored links.</small></p>
+    </div>
 </div>
+
+@code {
+    void GoRegister() => Nav.NavigateTo("/register");
+    void GoLogin() => Nav.NavigateTo("/login");
+    void GoUrlShortener() => Nav.NavigateTo("/url");
+}

@@ -1,0 +1,30 @@
+﻿@page "/register"
+@inject HttpClient Http
+@using System.Net.Http.Json
+
+<h3>Register</h3>
+
+<input placeholder="Username" @bind="Username" />
+<input placeholder="Password" type="password" @bind="Password" />
+<button @onclick="RegisterUser">Register</button>
+
+<p>@Message</p>
+
+@code {
+    private string Username = "";
+    private string Password = "";
+    private string Message = "";
+
+    private async Task RegisterUser()
+    {
+        var response = await Http.PostAsJsonAsync("/api/auth/register", new { Username, Password });
+        if (response.IsSuccessStatusCode)
+        {
+            Message = "Registered successfully!";
+        }
+        else
+        {
+            Message = await response.Content.ReadAsStringAsync();
+        }
+    }
+}
