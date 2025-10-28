@@ -65,10 +65,10 @@ app.MapPost("/api/shorty/create", async (CreateRequestModel request, AppDbContex
         UserId = user.Id
     };
 
-    db.Shorties.Add(shorty);
+    await db.Shorties.AddAsync(shorty);
     await db.SaveChangesAsync();
 
-    return Results.Ok(shorty);
+    return Results.Ok();
 });
 
 app.MapControllers();
