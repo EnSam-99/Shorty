@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using Shorty.Dal;
 
 namespace Shorty.Controllers
@@ -14,5 +14,5 @@ namespace Shorty.Controllers
             await testRepository.TestAsync(i);
             return Ok();
         }
-    }
+	}
 }

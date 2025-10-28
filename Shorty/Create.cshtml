@@ -1,0 +1,44 @@
+﻿@page
+@model Shorty.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Shorty</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Shorty.OriginalUrl" class="control-label"></label>
+                <input asp-for="Shorty.OriginalUrl" class="form-control" />
+                <span asp-validation-for="Shorty.OriginalUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Shorty.ShortUrl" class="control-label"></label>
+                <input asp-for="Shorty.ShortUrl" class="form-control" />
+                <span asp-validation-for="Shorty.ShortUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Shorty.UserID" class="control-label"></label>
+                <select asp-for="Shorty.UserID" class ="form-control" asp-items="ViewBag.UserID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

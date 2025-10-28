@@ -1,0 +1,36 @@
+﻿@page "/users"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Shorty.Dal.Data.Entities
+@implements IAsyncDisposable
+@inject IDbContextFactory<ApplicationDBContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="users/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Users">
+    <PropertyColumn Property="user => user.Name" />
+    <PropertyColumn Property="user => user.Email" />
+
+    <TemplateColumn Context="user">
+        <a href="@($"users/edit?id={user.ID}")">Edit</a> |
+        <a href="@($"users/details?id={user.ID}")">Details</a> |
+        <a href="@($"users/delete?id={user.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDBContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

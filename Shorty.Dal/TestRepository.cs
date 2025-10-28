@@ -1,43 +1,49 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace Shorty.Dal
 {
-    public class TestRepository(ILogger<TestRepository> logger)
-    {
-        public async Task TestAsync(int i)
-        {
-            string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
-                          "Username=neondb_owner;" +
-                          "Password=npg_5jmasY6vLIRC;" +
-                          "Database=neondb;" +
-                          "SSL Mode=Require;" +
-                          "Trust Server Certificate=true;" +
-                          "Channel Binding=Require;";
+	public class TestRepository
+	{
+		private readonly string _connectionString;
+		private readonly ILogger<TestRepository> _logger;
 
-            string createTableSql = @$"
-            CREATE TABLE IF NOT EXISTS users_{i} (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                email VARCHAR(150) UNIQUE NOT NULL,
-                created_at TIMESTAMP DEFAULT NOW()
-            );";
+		public TestRepository(ILogger<TestRepository> logger, IConfiguration configuration)
+		{
+			if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+			if (logger == null) throw new ArgumentNullException(nameof(logger));
 
-            try
-            {
-                using var connection = new NpgsqlConnection(connectionString);
-                await connection.OpenAsync();
+			_connectionString = configuration.GetConnectionString("DefaultConnection")
+								?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+			_logger = logger;
+		}
 
-                using (var command = new NpgsqlCommand(createTableSql, connection))
-                {
-                    await command.ExecuteNonQueryAsync();
-                    Console.WriteLine("Table checked/created successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred while creating the table.");
-            }
-        }
-    }
+		public async Task TestAsync(int i)
+		{
+			string createTableSql = @$"
+                CREATE TABLE IF NOT EXISTS users_{i} (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    email VARCHAR(150) UNIQUE NOT NULL,
+                    createdAt TIMESTAMP DEFAULT NOW()
+                );";
+
+			try
+			{
+				using var connection = new NpgsqlConnection(_connectionString);
+				await connection.OpenAsync();
+
+				using (var command = new NpgsqlCommand(createTableSql, connection))
+				{
+					await command.ExecuteNonQueryAsync();
+					Console.WriteLine("Table checked/created successfully.");
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "An error occurred while creating the table.");
+			}
+		}
+	}
 }
