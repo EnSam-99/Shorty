@@ -34,7 +34,7 @@ public class ShortyUrlRepository: IShortyUrlRepository<ShortyModel>
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ShortyModel>> GetAllShortyAsync()
+    public async Task<List<ShortyModel>> GetAllShortyAsync()
     {
         return await _context.Shorties.OrderByDescending(s => s.Id).ToListAsync();
     }

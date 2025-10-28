@@ -13,7 +13,7 @@ public interface IShortyUrlRepository<T>
     public Task DeleteAsync(Guid id);
     public Task UpdateAsync(Guid id, T shortyModel);
     public Task GetByIDAsync(Guid id);
-    public Task<IEnumerable<T>> GetAllShortyAsync();
+    public Task<List<T>> GetAllShortyAsync();
     
 
 
