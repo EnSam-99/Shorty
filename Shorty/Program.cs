@@ -4,12 +4,17 @@ using Microsoft.OpenApi.Models;
 using Shorty.Dal.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Shorty.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient();
 // Add services
-builder.Services.AddRazorPages();           // For _Host.cshtml
-builder.Services.AddServerSideBlazor();     // For Blazor Server
 builder.Services.AddControllers();          // For Web API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -73,17 +78,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shorty API v1"));
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.UseRouting();
-
+app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 // Map endpoints
 app.MapControllers();
-app.MapBlazorHub();                     // Blazor Server
+//app.MapBlazorHub();                     // Blazor Server
 //app.MapFallbackToPage("/_Host");        // Fallback for Blazor pages
 
 app.Run();
