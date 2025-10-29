@@ -1,4 +1,7 @@
-﻿@* @page "/shorty"
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
 @inject HttpClient Http
 
 <h3>Create Shorty</h3>
@@ -13,7 +16,7 @@
     <input @bind="url" />
 </div>
 
-<button @onclick="CreateShortyAsync">Create Shorty</button>
+<button @onclick=CreateShortyAsync>Create Shorty</button>
 
 <p>@resultMessage</p>
 
@@ -22,7 +25,7 @@
     private string url;
     private string resultMessage;
 
-    private async Task CreateShortyAsync()
+    public async Task CreateShortyAsync()
     {
         var requestData = new
         {
@@ -30,7 +33,7 @@
             Url = url
         };
 
-        var response = await Http.PostAsJsonAsync("api/shorty", requestData);
+        var response = await Http.PostAsJsonAsync("api/shorty/create", requestData);
 
         if (response.IsSuccessStatusCode)
         {
@@ -47,4 +50,4 @@
     {
         public string Message { get; set; }
     }
-} *@
+}

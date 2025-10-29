@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal
 {
-    public class Shorty
+    public class ShortLink
     {
         public int Id { get; set; }
 

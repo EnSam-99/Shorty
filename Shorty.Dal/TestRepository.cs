@@ -10,10 +10,9 @@ namespace Shorty.Dal
             string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
                           "Username=neondb_owner;" +
                           "Password=npg_5jmasY6vLIRC;" +
-                          "Database=neondb;" +
-                          "SSL Mode=Require;" +
-                          "Trust Server Certificate=true;" +
-                          "Channel Binding=Require;";
+                          "Database=aregdb;" +
+                          "SSL Mode=Disable"; //+
+                          //"Trust Server Certificate=true;";
 
             string createTableSql = @$"
             CREATE TABLE IF NOT EXISTS users_{i} (

@@ -1,0 +1,59 @@
+﻿@rendermode InteractiveServer
+
+@page "/shorto"
+@inject HttpClient Http
+
+<h3>Create Shorty</h3>
+
+<div>
+    <label>Email:</label>
+    <input @bind="email" placeholder="Enter email" />
+</div>
+
+<div>
+    <label>URL:</label>
+    <input @bind="url" placeholder="Enter URL" />
+</div>
+
+<button @onclick="CreateShortyAsync">Create Short URL</button>
+
+<p>@resultMessage</p>
+
+@code {
+    private string email;
+    private string url;
+    private string resultMessage;
+
+    private async Task CreateShortyAsync()
+    {
+        try
+        {
+            var requestData = new { Email = email, Url = url };
+            var response = await Http.PostAsJsonAsync("api/shorty", requestData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // ✅ Read the response as your ShortLink model
+                var data = await response.Content.ReadFromJsonAsync<ShortLink>();
+                resultMessage = $"✅ Short URL created: {data?.ShortyUrl}";
+            }
+            else
+            {
+                resultMessage = $"❌ API error: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            resultMessage = $"⚠️ Exception: {ex.Message}";
+        }
+    }
+
+    // 👇 local class matching your ShortLink model
+    public class ShortLink
+    {
+        public int Id { get; set; }
+        public string Url { get; set; } = string.Empty;
+        public string ShortyUrl { get; set; } = string.Empty;
+        public DateTime CreatedDate { get; set; }
+    }
+}
