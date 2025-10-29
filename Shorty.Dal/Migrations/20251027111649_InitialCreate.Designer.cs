@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shorty.Dal;
@@ -11,9 +12,11 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251027111649_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shorty.Dal.Entities.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +57,7 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Shorties");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,9 +74,9 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
                 {
-                    b.HasOne("Shorty.Dal.Entities.User", "User")
+                    b.HasOne("Shorty.Dal.Models.User", "User")
                         .WithMany("_shorties")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -82,7 +85,7 @@ namespace Shorty.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Models.User", b =>
                 {
                     b.Navigation("_shorties");
                 });

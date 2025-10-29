@@ -5,18 +5,15 @@ using Shorty.Dal;
 using Shorty.Domain.Abstraction;
 using Shorty.Domain.Services;
 
+using Shorty.Services;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddHttpClient("ServerAPI", client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5211/");
-});
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
-builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
+builder.Services.AddHttpClient();
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -24,9 +21,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddSingleton<TestRepository>();
+builder.Services.AddScoped<ShortyService>();
 builder.Services.AddControllers();
-
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
