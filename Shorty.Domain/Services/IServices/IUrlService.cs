@@ -1,9 +1,10 @@
-﻿namespace Shorty.Services.IServices;
+﻿using Shorty.Dal.Models;
 
-public class IUrlService
+namespace Shorty.Services.IServices;
+
+public interface IUrlService
 {
 
-
-
+    public Task<ShortyModel> CreateShortAsync(string originalUrl, Guid userId);
 
 }

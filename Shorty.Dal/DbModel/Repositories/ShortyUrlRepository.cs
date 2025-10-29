@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal.DbModel.Repositories;
 
-public class ShortyUrlRepository: IShortyUrlRepository<ShortyModel>
+public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
 {
     readonly AppDbContext _context;
 
@@ -20,9 +20,13 @@ public class ShortyUrlRepository: IShortyUrlRepository<ShortyModel>
 
     public async Task AddShortyAsync(ShortyModel shortyModel)
     {
+
         await _context.Shorties.AddAsync(shortyModel);
         await _context.SaveChangesAsync();
     }
+
+    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl) => _context.Shorties.AnyAsync(u => u.Url == origonalUrl || u.ShortUrl == shortUrl);
+
 
     public Task DeleteAsync(ShortyModel shortyid)
     {

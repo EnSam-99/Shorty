@@ -14,7 +14,7 @@ public interface IShortyUrlRepository<T>
     public Task UpdateAsync(Guid id, T shortyModel);
     public Task GetByIDAsync(Guid id);
     public Task<List<T>> GetAllShortyAsync();
-    
 
+    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
 
 }

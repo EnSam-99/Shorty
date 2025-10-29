@@ -1,49 +1,46 @@
 ﻿using Shorty.Dal.Db;
 using Shorty.Dal.DbModel.Repositories;
 using Shorty.Dal.Models;
+using Shorty.Services.IServices;
 
 namespace Shorty.Services
 {
-    public class UrlService
+    public class UrlService: IUrlService
     {
         private IShortyUrlRepository<ShortyModel> _shortyUrlRepository;
-        
+
         public UrlService(IShortyUrlRepository<ShortyModel> shortyUrlRepository)
         {
             _shortyUrlRepository = shortyUrlRepository;
         }
 
-        public async Task<ShortyModel> CreateShortAsynq(string originalUrl)
+        public async Task<ShortyModel> CreateShortAsync(string originalUrl, Guid userId)
         {
+
             if (string.IsNullOrEmpty(originalUrl))
             {
                 throw new ArgumentNullException(nameof(originalUrl));
             }
-            var shortOriginalUrl = "new short";
 
-            var shorties = await _shortyUrlRepository.GetAllShortyAsync();
-            // TODO db call
-            var isExistUrl = shorties.Any(x => x.Url == originalUrl || x.ShortUrl == shortOriginalUrl);
-            if (isExistUrl)
+            var shortUrl = Guid.NewGuid().ToString()[..6];
+
+            if (await _shortyUrlRepository.ExistsByUrlOrShortAsync(originalUrl, shortUrl))
             {
-                Console.WriteLine("Url or shortUrl already exists");
+                throw new ArgumentException("Url is exist");
             }
-
-
+            ;
 
             var shorty = new ShortyModel
             {
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 Id = Guid.NewGuid(),
-                ShortUrl = shortOriginalUrl,
+                ShortUrl = shortUrl,
                 Url = originalUrl,
-                UserId = Guid.NewGuid(),
-
-
+                UserId = userId,
             };
 
             await _shortyUrlRepository.AddShortyAsync(shorty);
-            
+
             return shorty;
 
         }

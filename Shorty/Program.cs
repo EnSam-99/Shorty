@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal.Db;
 using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal.Models;
+using Shorty.Services;
+using Shorty.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,19 +20,24 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
 });
 
-builder.Services.AddScoped<ShortyUrlRepository>();
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IShortyUrlRepository<ShortyModel>, ShortyUrlRepository>();
+builder.Services.AddScoped<IUserRepository<User>, UserRepository>();
+builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddScoped(sp =>
+{
+    var nav = sp.GetRequiredService<NavigationManager>();
+    return new HttpClient { BaseAddress = new Uri(nav.BaseUri) };
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 

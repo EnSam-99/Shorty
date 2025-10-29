@@ -1,9 +1,74 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using Shorty.Models
+@inject HttpClient Http
 
 <PageTitle>Home</PageTitle>
 
-<div>
-    Input URL
-    <input />
-    <button>Create your shorty link</button>
+<h3>Create short link</h3>
+
+<div class="card p-3">
+    <label>Input URL</label>
+    <input class="form-control" @bind="inputUrl" @bind:event="oninput" placeholder="https://example.com/page" />
+    <button type="button" class="btn btn-primary mt-2" @onclick="CreateAsync" disabled="@isBusy">
+        @(isBusy ? "Creating..." : "Create your shorty link")
+    </button>
+
+    @if (!string.IsNullOrEmpty(resultShort))
+    {
+        <div class="alert alert-success mt-3">
+            Short link: <strong>@($"{BaseHost}/{resultShort}")</strong>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger mt-3">@error</div>
+    }
 </div>
+
+@code {
+    private string inputUrl = "";
+    private string? resultShort;
+    private string? error;
+    private bool isBusy;
+
+
+    private const string BaseHost = "https://shor.ty";
+
+    private async Task CreateAsync()
+    {
+        error = null;
+        resultShort = null;
+        if (string.IsNullOrWhiteSpace(inputUrl))
+        {
+            error = "URL can't be empty.";
+            return;
+        }
+
+        isBusy = true;
+        try
+        {
+            var payload = new { url = inputUrl, userId = Guid.NewGuid() };
+            var resp = await Http.PostAsJsonAsync("api/shorty/add-shorty", payload);
+            if (resp.IsSuccessStatusCode)
+            {
+                var json = await resp.Content.ReadFromJsonAsync<ShortyDto>();
+                resultShort = json?.ShortUrl;
+            }
+            else
+            {
+                error = await resp.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+
+}
