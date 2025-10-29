@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal;
+using Shorty.Domain.Abstraction;
+using Shorty.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ builder.Services.AddHttpClient("ServerAPI", client =>
     client.BaseAddress = new Uri("http://localhost:5211/");
 });
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
+builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

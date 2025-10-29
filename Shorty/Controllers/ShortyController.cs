@@ -1,45 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Shorty.Dal;
+using Shorty.Domain.Abstraction;
+using Shorty.Domain.Models.Request;
 namespace Shorty.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ShortyController : ControllerBase
+    public class ShortyController(IShortyUrlService shortyUrlService) : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public ShortyController(AppDbContext context)
-        {
-            _context = context;
-        }
-
         [HttpPost]
-        public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateDto shorty)
+        public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateRequestModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var shorty = await shortyUrlService.CreateShortyAsync(model);
 
-            string shortCode = Guid.NewGuid().ToString().Substring(0, 6);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == shorty.Email);
-            if (user == null)
-            {
-                user = new User { Email = shorty.Email };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-            }
-            var newShorty = new ShortLink
-            {
-                Url = shorty.Url,
-                ShortyUrl = shortCode,
-                CreatedDate = DateTime.UtcNow,
-                UserId = user.Id
-            };
-
-            _context.Shorties.Add(newShorty);
-            await _context.SaveChangesAsync();
-
-            return Ok(newShorty);
+            return Ok(shorty);
         }
     }
 }
