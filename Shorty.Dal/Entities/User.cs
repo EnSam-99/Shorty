@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Shorty.Dal.Models;
+namespace Shorty.Dal.Entities;
 
 public class User
 {
@@ -8,6 +8,6 @@ public class User
     public int Id { get; set; }
     [Required]
     public string Email{ get; set; } = string.Empty;
-    public IList<Shorty> _shorties { get; set; } = new List<Shorty>();
+    public IList<Shorty> Shorties { get; set; } = new List<Shorty>();
 
 }

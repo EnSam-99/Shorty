@@ -22,7 +22,7 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.Shorty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Shorties");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,9 +71,9 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.Shorty", b =>
                 {
-                    b.HasOne("Shorty.Dal.Models.User", "User")
+                    b.HasOne("Shorty.Dal.Entities.User", "User")
                         .WithMany("_shorties")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -82,7 +82,7 @@ namespace Shorty.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
                 {
                     b.Navigation("_shorties");
                 });

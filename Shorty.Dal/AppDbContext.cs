@@ -1,5 +1,5 @@
 namespace Shorty.Dal;
-using Shorty.Dal.Models;
+using Shorty.Dal.Entities;
 using Microsoft.EntityFrameworkCore;
 public class AppDbContext:DbContext
 {
@@ -21,23 +21,8 @@ public class AppDbContext:DbContext
 
         modelBuilder.Entity<Shorty>()
             .HasOne(s => s.User)
-            .WithMany(u => u._shorties)
+            .WithMany(u => u.Shorties)
             .HasForeignKey(s => s.UserId);
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
-                                  "Username=neondb_owner;" +
-                                  "Password=npg_5jmasY6vLIRC;" +
-                                  "Database=yelenadb;" +
-                                  "SSL Mode=Require;" +
-                                  "Trust Server Certificate=true;" +
-                                  "Channel Binding=Require;";
-
-        optionsBuilder.UseNpgsql(connectionString);
-        base.OnConfiguring(optionsBuilder);
-    }
-    
     
 }

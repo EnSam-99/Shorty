@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shorty.Dal.Models;
+namespace Shorty.Dal.Entities;
 
 public class Shorty
 {
