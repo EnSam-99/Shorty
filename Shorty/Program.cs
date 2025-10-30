@@ -10,7 +10,7 @@ using Shorty.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -20,9 +20,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
 });
 
-builder.Services.AddScoped<IShortyUrlRepository<ShortyModel>, ShortyUrlRepository>();
+
 builder.Services.AddScoped<IUserRepository<User>, UserRepository>();
+builder.Services.AddScoped<IUserService<User>, UserService>();
+builder.Services.AddScoped<IShortyUrlRepository<ShortyModel>, ShortyUrlRepository>();
 builder.Services.AddScoped<IUrlService, UrlService>();
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

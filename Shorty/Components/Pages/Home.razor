@@ -8,6 +8,10 @@
 <h3>Create short link</h3>
 
 <div class="card p-3">
+    <label>Input User Name</label>
+    <input class="form-control" @bind="inputUserName" @bind:event="oninput" placeholder="User name" />
+    <label>Input Email</label>
+    <input class="form-control" @bind="inputEmail" @bind:event="oninput" />
     <label>Input URL</label>
     <input class="form-control" @bind="inputUrl" @bind:event="oninput" placeholder="https://example.com/page" />
     <button type="button" class="btn btn-primary mt-2" @onclick="CreateAsync" disabled="@isBusy">
@@ -28,6 +32,9 @@
 
 @code {
     private string inputUrl = "";
+    private string inputUserName = "";
+    private string inputEmail = "";
+
     private string? resultShort;
     private string? error;
     private bool isBusy;
@@ -39,17 +46,39 @@
     {
         error = null;
         resultShort = null;
-        if (string.IsNullOrWhiteSpace(inputUrl))
+
+        if (string.IsNullOrWhiteSpace(inputUrl) ||
+            string.IsNullOrWhiteSpace(inputUserName) ||
+            string.IsNullOrWhiteSpace(inputEmail))
         {
-            error = "URL can't be empty.";
+            error = "All fields are required.";
             return;
         }
 
         isBusy = true;
         try
         {
-            var payload = new { url = inputUrl, userId = Guid.NewGuid() };
-            var resp = await Http.PostAsJsonAsync("api/shorty/add-shorty", payload);
+            
+            var userPayload = new { Name = inputUserName, Email = inputEmail };
+            var userResp = await Http.PostAsJsonAsync("api/user/create-user", userPayload);
+
+            if (!userResp.IsSuccessStatusCode)
+            {
+                error = "Failed to create user.";
+                return;
+            }
+
+            var user = await userResp.Content.ReadFromJsonAsync<UserDto>();
+            if (user == null)
+            {
+                error = "User creation failed (no data).";
+                return;
+            }
+
+            
+            var shortyPayload = new { Url = inputUrl, UserId = user.Id };
+            var resp = await Http.PostAsJsonAsync("api/shorty/add-shorty", shortyPayload);
+
             if (resp.IsSuccessStatusCode)
             {
                 var json = await resp.Content.ReadFromJsonAsync<ShortyDto>();
@@ -69,6 +98,7 @@
             isBusy = false;
         }
     }
+
 
 
 }

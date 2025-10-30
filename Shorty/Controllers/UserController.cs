@@ -2,6 +2,8 @@
 using Shorty.Dal.DbModel.Repositories;
 using Shorty.Dal.Models;
 using Shorty.Models;
+using Shorty.Services;
+using Shorty.Services.IServices;
 
 namespace Shorty.Controllers;
 
@@ -9,44 +11,43 @@ namespace Shorty.Controllers;
 [ApiController]
 public class UserController: ControllerBase
 {
-    readonly UserRepository _userRepository;
+    readonly IUserService<User> _userService;
   
-    public UserController(UserRepository userRepository)
+    public UserController(IUserService<User> userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     [HttpPost("create-user")]
-    public async Task<IActionResult> AddUserAsinc([FromBody] UserDto dto)
+    public async Task<IActionResult> AddUserAsync([FromBody] UserDto dto)
     {
-        if(string.IsNullOrWhiteSpace(dto.Name)|| string.IsNullOrWhiteSpace(dto.Email))
+        if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Email))
+            return BadRequest("Name and Email are required.");
+
+        var user = await _userService.CreateUserAsync(userName: dto.Name , email: dto.Email);
+        return Ok(new UserDto
         {
-            return BadRequest("Empty fields");
-        }
-        var user = new User
-        {
-            Name = dto.Name.Trim(),
-            Email = dto.Email.Trim()
-        };
-        await _userRepository.AddUserAsync(user);
-        return Ok();
-
-    }
-
-
-    [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
-    {
-
-        var users = await _userRepository.GetAllUsersAsync();
-        var result = users.Select(u => new UserDto()
-        {
-            Id = u.Id,
-            Name = u.Name,
-            Email = u.Email,
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email
         });
-        return Ok(result);
-
     }
-
 }
+
+
+    //[HttpGet]
+    //public async Task<IActionResult> GetAllAsync()
+    //{
+
+    //    var users = await _userService.GetAllUsersAsync();
+    //    var result = users.Select(u => new UserDto()
+    //    {
+    //        Id = u.Id,
+    //        Name = u.Name,
+    //        Email = u.Email,
+    //    });
+    //    return Ok(result);
+
+    //}
+
+

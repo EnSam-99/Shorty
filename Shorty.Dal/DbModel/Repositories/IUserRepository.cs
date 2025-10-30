@@ -13,4 +13,5 @@ public interface IUserRepository<T>
     public Task AddUserAsync(T user);
     public Task UpdateUserAsync(T user, Guid id);
     public Task DeleteUserAsync(Guid id);
+    public Task<bool> ExistsByUser(string userName, string email);
 }

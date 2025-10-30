@@ -25,7 +25,7 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
         await _context.SaveChangesAsync();
     }
 
-    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl) => _context.Shorties.AnyAsync(u => u.Url == origonalUrl || u.ShortUrl == shortUrl);
+    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl) => _context.Shorties.AnyAsync(u => u.Url.Trim() == origonalUrl.Trim() || u.ShortUrl.Trim() == shortUrl.Trim());
 
 
     public Task DeleteAsync(ShortyModel shortyid)

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Shorty.Dal.DbModel.Repositories;
 using Shorty.Dal.Models;
+using Shorty.Domain.Models;
 using Shorty.Models;
 using Shorty.Services;
+using Shorty.Services.IServices;
 
 namespace Shorty.Controllers;
 
@@ -10,19 +13,24 @@ namespace Shorty.Controllers;
 [ApiController]
 public class ShortyController: ControllerBase
 {
-    private readonly UrlService _service;
+    private readonly IUrlService _service;
 
-    public ShortyController(UrlService service)
+    public ShortyController(IUrlService service)
     {
         _service = service;
     }
 
     [HttpPost("add-shorty")]
-    public async Task<IActionResult> AddShorty([FromBody] ShortyDto shorty)
+    public async Task<IActionResult> AddShorty([FromBody] CreateShortyRequestDto req)
     {
 
-        var created = await _service.CreateShortAsync(shorty.Url, shorty.UserId);
-        return Ok();
+        var entity = await _service.CreateShortAsync(req.Url, req.UserId);
+        return Ok(new ShortyDto
+        {
+            Url = entity.Url,
+            ShortUrl = entity.ShortUrl,
+            UserId = entity.UserId
+        });
 
     }
 

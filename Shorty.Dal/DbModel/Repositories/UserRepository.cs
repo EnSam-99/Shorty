@@ -14,6 +14,7 @@ public class UserRepository: IUserRepository<User>
     {
         _db = db;
     }
+    public  Task<bool> ExistsByUser(string userName, string email) =>  _db.Users.AnyAsync(u => u.Name.Trim().ToLower() == userName.Trim().ToLower() || u.Email.Trim().ToLower() == email.Trim().ToLower());
 
     public async Task<IEnumerable<User>> GetAllUsersAsync()
     {

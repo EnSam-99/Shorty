@@ -6,8 +6,8 @@ namespace Shorty.Models;
 
 public class ShortyDto
 {
-    public string Url { get; set; } = string.Empty;
-    public string ShortUrl { get; set; } = string.Empty;   
+    public string Url { get; set; } = default!;
+    public string ShortUrl { get; set; } = default!;   
     public Guid UserId { get; set; }
 
 }
