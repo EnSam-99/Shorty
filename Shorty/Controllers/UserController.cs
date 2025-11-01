@@ -35,19 +35,6 @@ public class UserController: ControllerBase
 }
 
 
-    //[HttpGet]
-    //public async Task<IActionResult> GetAllAsync()
-    //{
 
-    //    var users = await _userService.GetAllUsersAsync();
-    //    var result = users.Select(u => new UserDto()
-    //    {
-    //        Id = u.Id,
-    //        Name = u.Name,
-    //        Email = u.Email,
-    //    });
-    //    return Ok(result);
-
-    //}
 
 

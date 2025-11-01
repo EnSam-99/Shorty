@@ -25,31 +25,44 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
         await _context.SaveChangesAsync();
     }
 
-    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl) => _context.Shorties.AnyAsync(u => u.Url.Trim() == origonalUrl.Trim() || u.ShortUrl.Trim() == shortUrl.Trim());
+    public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl) =>
+        _context.Shorties.AnyAsync(u => u.Url.Trim() == origonalUrl.Trim()
+        || u.ShortCode.Trim() == shortUrl.Trim());
 
-
-    public Task DeleteAsync(ShortyModel shortyid)
+    public async Task<bool> ExsistsId(Guid id)
     {
-        throw new NotImplementedException();
+     var isExists = await  _context.Shorties.AnyAsync(u => u.Id == id);
+        return isExists;
     }
-
-    public Task DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    
 
     public async Task<List<ShortyModel>> GetAllShortyAsync()
     {
-        return await _context.Shorties.OrderByDescending(s => s.Id).ToListAsync();
+        var list = await _context.Shorties.OrderByDescending(s => s.Id).ToListAsync();
+        return list;
     }
 
-    public Task GetByIDAsync(Guid id)
+    public async Task<ShortyModel> GetByIDAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.Id == id);
+        return shorty;
     }
 
-    public Task UpdateAsync(Guid id, ShortyModel shortyModel)
+    public async Task UpdateAsync( ShortyModel shortyModel)
     {
-        throw new NotImplementedException();
+        if (shortyModel is null)
+            throw new ArgumentNullException(nameof(shortyModel));
+        if (shortyModel.Id == Guid.Empty)
+            throw new ArgumentException("Id is empty.", nameof(shortyModel.Id));
+        if (string.IsNullOrWhiteSpace(shortyModel.ShortCode))
+            throw new ArgumentException("ShortCode is empty.", nameof(shortyModel.ShortCode));
+
+        await _context.Shorties.Where(x => x.Id == shortyModel.Id)
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)         
+        .SetProperty(l=>l.LastAccessedAt, DateTime.UtcNow));
+
+        
     }
+
+
 }

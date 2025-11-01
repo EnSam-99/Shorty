@@ -9,12 +9,11 @@ namespace Shorty.Dal.DbModel.Repositories;
 
 public interface IShortyUrlRepository<T>
 {
-    public Task AddShortyAsync(T shortyModel);
-    public Task DeleteAsync(Guid id);
-    public Task UpdateAsync(Guid id, T shortyModel);
-    public Task GetByIDAsync(Guid id);
+    public Task AddShortyAsync(T shortyModel);   
+    public Task UpdateAsync(ShortyModel newShortCode);
+    public Task<T> GetByIDAsync(Guid id);
     public Task<List<T>> GetAllShortyAsync();
 
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
-
+   public Task<bool> ExsistsId(Guid id);
 }

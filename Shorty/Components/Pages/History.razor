@@ -1,0 +1,78 @@
+﻿@page "/shorties-history"
+@using System.Net.Http.Json
+@using Shorty.Domain.Models
+@inject HttpClient Http
+
+<h3>Short codes history</h3>
+
+
+
+@if (_error is not null)
+{
+    <div class="alert alert-danger">@_error</div>
+}
+else if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (_items.Count == 0)
+{
+    <div class="alert alert-info">No history records found.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Changed At</th>                   
+                    <th>Shorty Id</th>
+                    <th>Old Short</th>
+                    <th>New Short</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var h in _items)
+                {
+                    <tr>
+                        <td>@h.ChangedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>                        
+                        <td>@h.ShortyId</td>
+                        <td>@(string.IsNullOrEmpty(h.OldShort) ? "-" : h.OldShort)</td>
+                        <td>@h.NewShort</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<ShortHistoryDto> _items = new();
+    private bool _loading = true;
+    private string? _error;
+    private string _query = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await ReloadAsync();
+
+    private async Task ReloadAsync()
+    {
+        _error = null;
+        _loading = true;
+        try
+        {
+            var result = await Http.GetFromJsonAsync<List<ShortHistoryDto>>("api/ShortCodeHistory/all-history");
+            _items = result ?? new List<ShortHistoryDto>();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _items = new();
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+  
+}

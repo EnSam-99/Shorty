@@ -1,0 +1,116 @@
+﻿@page "/update-link"
+@using System.Net.Http.Json
+@using Shorty.Domain.Models
+@using Shorty.Models
+
+@rendermode InteractiveServer
+@inject HttpClient Http
+
+<h3>Change Short Code</h3>
+
+@if (!string.IsNullOrEmpty(_msg))
+{
+    <div class="alert @(_isError ? "alert-danger" : "alert-success")">@_msg</div>
+}
+
+<label>Select short link</label>
+<InputSelect @bind-Value="_selectedId" class="form-select" disabled="@_loading">
+    <option value="">-- select --</option>
+    @foreach (var s in _shortCodes)
+    {
+        <option value="@s.Id">@s.ShortUrl</option>
+    }
+</InputSelect>
+
+@if (_selectedId is not null)
+{
+    var selected = _shortCodes.FirstOrDefault(x => x.Id == _selectedId.Value);
+    if (selected is not null)
+    {
+        <div class="mt-2">
+            <b>Current short:</b> @selected.ShortUrl<br />
+            <b>URL:</b> @selected.Url
+        </div>
+    }
+}
+
+<label class="mt-2">New Short code</label>
+<input class="form-control" @bind="inputNewUrl" @bind:event="oninput" placeholder="myShortLink" />
+
+<button type="button" class="btn btn-primary mt-2"
+        @onclick="UpdateShortlink">
+        
+    @(isBusy ? "Updating..." : "Update your shorty link")
+</button>
+
+
+@code {
+    private List<ShortyDto> _shortCodes = new();
+    private Guid? _selectedId;           
+    private bool _loading = true;
+    private string inputNewUrl = string.Empty;
+    private bool isBusy;
+    private string? _msg;
+    private bool _isError;
+
+    protected override async Task OnInitializedAsync() => await LoadShortiesAsync();
+
+    private async Task LoadShortiesAsync()
+    {
+        _msg = null; _isError = false; _loading = true;
+        try
+        {
+            _shortCodes = await Http.GetFromJsonAsync<List<ShortyDto>>("api/shorty/all")
+                          ?? new List<ShortyDto>();
+            if (_selectedId is not null && !_shortCodes.Any(x => x.Id == _selectedId.Value))
+                _selectedId = null;
+        }
+        catch (Exception ex)
+        {
+            _isError = true;
+            _msg = $"Failed to load short codes: {ex.Message}";
+            _shortCodes = new(); _selectedId = null;
+        }
+        finally { _loading = false; }
+    }
+
+    private async Task UpdateShortlink()
+    {
+        _msg = null; _isError = false;
+
+        if (_selectedId is null) { _isError = true; _msg = "Select a short code."; return; }
+        if (string.IsNullOrWhiteSpace(inputNewUrl)) { _isError = true; _msg = "New short is required."; return; }
+
+        var selected = _shortCodes.FirstOrDefault(x => x.Id == _selectedId.Value);
+        if (selected is null) { _isError = true; _msg = "Selected short not found."; return; }
+
+        isBusy = true;
+        try
+        {
+            var payload = new UpdateShortRequestDto { ShortyId = _selectedId.Value, NewShort = inputNewUrl };
+
+            var resp = await Http.PatchAsJsonAsync("api/shorty/update-short", payload);
+
+            if (resp.IsSuccessStatusCode)
+            {
+                _msg = "Short code updated.";
+                inputNewUrl = string.Empty;
+                await LoadShortiesAsync();
+            }
+            else
+            {
+                var body = await resp.Content.ReadAsStringAsync(); 
+                _isError = true;
+                _msg = $"Update failed: {(int)resp.StatusCode} {body}";
+            }
+        }
+        catch (Exception ex)
+        {
+            _isError = true;
+            _msg = ex.Message;
+        }
+        finally { isBusy = false; }
+    }
+
+   
+}

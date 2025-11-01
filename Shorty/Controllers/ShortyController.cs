@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 using Shorty.Domain.Models;
 using Shorty.Models;
@@ -13,9 +14,9 @@ namespace Shorty.Controllers;
 [ApiController]
 public class ShortyController: ControllerBase
 {
-    private readonly IUrlService _service;
+    private readonly IUrlService<ShortyModel> _service;
 
-    public ShortyController(IUrlService service)
+    public ShortyController(IUrlService<ShortyModel> service)
     {
         _service = service;
     }
@@ -28,26 +29,38 @@ public class ShortyController: ControllerBase
         return Ok(new ShortyDto
         {
             Url = entity.Url,
-            ShortUrl = entity.ShortUrl,
+            ShortUrl = entity.ShortCode,
             UserId = entity.UserId
         });
 
     }
+    [HttpPatch("update-short")]
+   public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
+    {
+        if (shorty is null)
+            return BadRequest("Body is required.");
 
-    //[HttpGet]
-    //public async Task<IActionResult> GetAllAsync()
-    //{
-    //    var shorties = await _service.GetAllShortyAsync();
-    //    var result = shorties.Select( s => new ShortyDto()
-    //    {
-    //        UserId = s.UserId,
-    //        ShortUrl = s.ShortUrl,
-    //        Url = s.Url
+        if (shorty.ShortyId == Guid.Empty)
+            return BadRequest("ShortyId is required.");
 
-    //    });
+        if (string.IsNullOrWhiteSpace(shorty.NewShort))
+            return BadRequest("NewShort is required.");
+        await _service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
+        
+        return Ok();
+    }
 
-    //    return Ok(result);
-    //}
-
-
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllShorties()
+    {
+        var list = await _service.GetAllShortCodesAsync();
+        var dto = list.Select(x => new ShortyDto
+        {
+            Id = x.Id,
+            Url = x.Url,
+            ShortUrl = x.ShortCode,
+            UserId = x.UserId
+        });
+        return Ok(dto);
+    }
 }

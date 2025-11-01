@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 
 namespace Shorty.Dal.Db;
@@ -11,40 +12,13 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<ShortyModel> Shorties { get; set; } = null!;
- 
+
+    public DbSet<ShortyHistoryModel> Histories { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-     
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
-            entity.HasIndex(e => e.Email).IsUnique();
-
-         
-            entity.Property(e => e.CreatedAt)
-                  .HasDefaultValueSql("now() at time zone 'utc'");
-        });
-
-       
-        modelBuilder.Entity<ShortyModel>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Url).IsRequired().HasMaxLength(2048);
-            entity.Property(e => e.ShortUrl).IsRequired().HasMaxLength(100);
-            entity.HasIndex(e => e.ShortUrl).IsUnique();
-
-            entity.Property(e => e.CreatedAt)
-                  .HasDefaultValueSql("now() at time zone 'utc'");
-
-            entity.HasOne(e => e.User)
-                  .WithMany(u => u.Shorties)
-                  .HasForeignKey(e => e.UserId)
-                  .OnDelete(DeleteBehavior.Cascade);
-        });
     }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -43,23 +43,4 @@ public class UserService: IUserService<User>
         return user;
     }
 
-    public Task<User> DeleteUserAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<User>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User> GetUserAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User> UpdateUserAsync(UserDto dto, Guid id)
-    {
-        throw new NotImplementedException();
-    }
 }
