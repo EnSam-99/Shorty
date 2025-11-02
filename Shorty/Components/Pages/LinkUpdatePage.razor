@@ -30,6 +30,15 @@
         <div class="mt-2">
             <b>Current short:</b> @selected.ShortUrl<br />
             <b>URL:</b> @selected.Url
+
+            <div class="alert alert-success mt-3">
+                Short link:
+                <strong>
+                    <a href="@($"api/redirect/{selected.ShortUrl}")" target="_blank" rel="noopener">
+                        @selected.ShortUrl
+                    </a>
+                </strong>
+            </div>
         </div>
     }
 }
@@ -52,7 +61,7 @@
     private bool isBusy;
     private string? _msg;
     private bool _isError;
-
+    private string? resultShort;
     protected override async Task OnInitializedAsync() => await LoadShortiesAsync();
 
     private async Task LoadShortiesAsync()

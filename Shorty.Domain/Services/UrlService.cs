@@ -68,6 +68,17 @@ namespace Shorty.Services
             return list;
         }
 
+        public async Task<string> GetOriginalUrlAsync(string shortCode)
+        {
+
+            if (string.IsNullOrWhiteSpace(shortCode))
+                throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
+
+          var url =  await _shortyUrlRepository.GetOriginalShortUrlAsync(shortCode);
+
+            return url;
+        }
+
         public async Task UpdateShortCodAsync(Guid id, string newShortyCode)
         {
             if (id == Guid.Empty) 

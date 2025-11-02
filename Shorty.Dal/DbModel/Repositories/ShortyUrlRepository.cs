@@ -31,10 +31,10 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
 
     public async Task<bool> ExsistsId(Guid id)
     {
-     var isExists = await  _context.Shorties.AnyAsync(u => u.Id == id);
+        var isExists = await _context.Shorties.AnyAsync(u => u.Id == id);
         return isExists;
     }
-    
+
 
     public async Task<List<ShortyModel>> GetAllShortyAsync()
     {
@@ -45,10 +45,26 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
     public async Task<ShortyModel> GetByIDAsync(Guid id)
     {
         var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.Id == id);
+        if (shorty == null)
+            throw new KeyNotFoundException($"Short code '{shorty}' not found.");
+
+
         return shorty;
     }
 
-    public async Task UpdateAsync( ShortyModel shortyModel)
+    public async Task<string> GetOriginalShortUrlAsync(string shortCode)
+    {
+        if (string.IsNullOrWhiteSpace(shortCode))
+            throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
+
+        var url = await _context.Shorties.AsNoTracking().FirstOrDefaultAsync(s => s.ShortCode == shortCode);
+        if (url == null)
+            throw new KeyNotFoundException($"Url '{shortCode}' not found.");
+
+        return url.Url;
+    }
+
+    public async Task UpdateAsync(ShortyModel shortyModel)
     {
         if (shortyModel is null)
             throw new ArgumentNullException(nameof(shortyModel));
@@ -58,10 +74,10 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyModel>
             throw new ArgumentException("ShortCode is empty.", nameof(shortyModel.ShortCode));
 
         await _context.Shorties.Where(x => x.Id == shortyModel.Id)
-            .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)         
-        .SetProperty(l=>l.LastAccessedAt, DateTime.UtcNow));
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)
+        .SetProperty(l => l.LastAccessedAt, DateTime.UtcNow));
 
-        
+
     }
 
 

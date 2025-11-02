@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @using Shorty.Models
 @inject HttpClient Http
-
+@inject NavigationManager Nav
 <PageTitle>Create short url</PageTitle>
 
 <h3>Create short link</h3>
@@ -28,6 +28,7 @@
     {
         <div class="alert alert-danger mt-3">@error</div>
     }
+
 </div>
 
 

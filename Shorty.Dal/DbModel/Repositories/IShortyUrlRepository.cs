@@ -16,4 +16,5 @@ public interface IShortyUrlRepository<T>
 
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
    public Task<bool> ExsistsId(Guid id);
+    public Task<string> GetOriginalShortUrlAsync(string shortCode);
 }
