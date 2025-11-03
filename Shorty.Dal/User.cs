@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -7,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal
 {
-    public class User
-    {
-        [Key]
-        public int Id { get; set; }
+	[Index(nameof(Email), IsUnique = true)]
+	public class User
+	{
+		[Key]
+		public int Id { get; set; }
 
-        [Required, EmailAddress]
-        public string Email { get; set; } = string.Empty;
+		[Required, EmailAddress, StringLength(320)]
+		public string Email { get; set; } = string.Empty;
 
-        public ICollection<ShortLink> Shorties;
+		public ICollection<ShortLink> Shorties { get; set; } = new List<ShortLink>();
 
-    }
+	}
 }
