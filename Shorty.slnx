@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Shorty.Dal/Shorty.Dal.csproj" />
+  <Project Path="Shorty.Domain/Shorty.Domain.csproj" />
+  <Project Path="Shorty/Shorty.csproj" />
+</Solution>

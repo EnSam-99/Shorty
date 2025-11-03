@@ -1,0 +1,188 @@
+﻿@page "/shorty-stats"
+@rendermode InteractiveServer
+@using System.Net.Http.Json
+@using System.Text.Json.Serialization
+@inject HttpClient Http
+
+<h3>Shorty Statistics</h3>
+
+<div class="row g-4">
+
+    <div class="col-12 col-lg-6">
+        <div class="card p-3">
+            <h5 class="mb-3">Stats by Short Code</h5>
+
+            <div class="mb-2">
+                <label class="form-label">Short code</label>
+                <input class="form-control" @bind="code" placeholder="e.g. 00aBc1" />
+            </div>
+
+            <button class="btn btn-primary"
+                    disabled="@string.IsNullOrWhiteSpace(code)"
+                    @onclick="LoadStats">
+                Get stats
+            </button>
+
+            @if (loadingStats)
+            {
+                <p class="mt-3">Loading…</p>
+            }
+            else if (!string.IsNullOrEmpty(errorStats))
+            {
+                <div class="alert alert-danger mt-3">@errorStats</div>
+            }
+            else if (stats is not null)
+            {
+                <table class="table table-sm table-striped mt-3 w-auto">
+                    <tbody>
+                        <tr>
+                            <th>Short Id</th>
+                            <td>@stats.ShortId</td>
+                        </tr>
+                        <tr>
+                            <th>Clicks</th>
+                            <td>@stats.Clicks</td>
+                        </tr>
+                        <tr>
+                            <th>Last Accessed</th>
+                            <td>@(stats.LastAccessed?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") ?? "—")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card p-3">
+            <h5 class="mb-3">Top Shorties</h5>
+
+            <div class="d-flex align-items-end gap-2 mb-2">
+                <div class="flex-grow-0">
+                    <label class="form-label">Take</label>
+                    <input type="number" class="form-control"
+                           min="1" max="100"
+                           @bind="take" />
+                </div>
+                <button class="btn btn-outline-primary" @onclick="LoadTop">Load top</button>
+            </div>
+
+            @if (loadingTop)
+            {
+                <p class="mt-3">Loading…</p>
+            }
+            else if (!string.IsNullOrEmpty(errorTop))
+            {
+                <div class="alert alert-danger mt-3">@errorTop</div>
+            }
+            else if (top is not null && top.Any())
+            {
+                <table class="table table-striped mt-2">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Short Code</th>
+                            <th>Clicks</th>
+                            <th>Redirect URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < top.Count; i++)
+                        {
+                            var row = top[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>
+                                    <a href="@($"/r/{row.ShortCode}")" target="_blank">@row.ShortCode</a>
+                                </td>
+                                <td>@row.Clicks</td>
+                                <td>
+                                    <a href="@($"/r/{row.ShortCode}")" target="_blank">open</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (top is not null)
+            {
+                <p class="mt-3">No data.</p>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private string code = string.Empty;
+    private ShortyStatsDto? stats;
+    private bool loadingStats;
+    private string? errorStats;
+
+    private int take = 10;
+    private List<TopItem>? top;
+    private bool loadingTop;
+    private string? errorTop;
+
+    private async Task LoadStats()
+    {
+        loadingStats = true;
+        errorStats = null;
+        stats = null;
+        StateHasChanged();
+
+        try
+        {
+            var safe = Uri.EscapeDataString(code.Trim());
+            stats = await Http.GetFromJsonAsync<ShortyStatsDto>($"api/shorty/stats/{safe}");
+        }
+        catch (Exception ex)
+        {
+            errorStats = ex.Message;
+        }
+        finally
+        {
+            loadingStats = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadTop()
+    {
+        loadingTop = true;
+        errorTop = null;
+        top = null;
+        StateHasChanged();
+
+        try
+        {
+            var url = $"api/shorty/top?take={Math.Clamp(take, 1, 100)}";
+            top = await Http.GetFromJsonAsync<List<TopItem>>(url);
+        }
+        catch (Exception ex)
+        {
+            errorTop = ex.Message;
+        }
+        finally
+        {
+            loadingTop = false;
+            StateHasChanged();
+        }
+    }
+
+    public sealed class ShortyStatsDto
+    {
+        public int ShortId { get; set; }
+        public int Clicks { get; set; }
+        public DateTime? LastAccessed { get; set; }
+    }
+
+    public sealed class TopItem
+    {
+        [JsonPropertyName("short_code")]
+        public string ShortCode { get; set; } = string.Empty;
+
+        [JsonPropertyName("clicks")]
+        public int Clicks { get; set; }
+    }
+}
