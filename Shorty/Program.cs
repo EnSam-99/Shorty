@@ -7,52 +7,58 @@ using Shorty.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+// ==================== DATABASE CONFIG ====================
+var cs = builder.Configuration.GetConnectionString("Postgres")
+	?? throw new InvalidOperationException("Connection string 'Postgres' not found.");
 
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+	options.UseNpgsql(cs));
+
+// ==================== RAZOR COMPONENTS ====================
+builder.Services.AddRazorComponents()
+	.AddInteractiveServerComponents();
+
+// ==================== HTTP CLIENT (for Blazor pages) ====================
 builder.Services.AddHttpClient("ServerAPI", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5211/");
+	client.BaseAddress = new Uri("http://localhost:5211/");
 });
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
+
+// ==================== DEPENDENCY INJECTION ====================
 builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
-});
-
-builder.Services.AddSingleton<TestRepository>();
 builder.Services.AddControllers();
 
+// ==================== SWAGGER ====================
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Title = "Shorty API",
+		Version = "v1"
+	});
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ==================== MIDDLEWARE PIPELINE ====================
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Shorty API v1");
-        options.RoutePrefix = "swagger";
-    });
+	app.UseSwagger();
+	app.UseSwaggerUI(options =>
+	{
+		options.SwaggerEndpoint("/swagger/v1/swagger.json", "Shorty API v1");
+		options.RoutePrefix = "swagger";
+	});
 }
 
-app.UseRouting();
-
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
+// ==================== ROUTES ====================
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+	.AddInteractiveServerRenderMode();
 
 app.MapControllers();
 
 app.Run();
-

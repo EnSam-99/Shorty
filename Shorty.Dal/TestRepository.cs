@@ -10,7 +10,7 @@ namespace Shorty.Dal
             string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
                           "Username=neondb_owner;" +
                           "Password=npg_5jmasY6vLIRC;" +
-                          "Database=aregdb;" +
+                          "Database=mherdb;" +
                           "SSL Mode=Disable"; //+
                           //"Trust Server Certificate=true;";
 

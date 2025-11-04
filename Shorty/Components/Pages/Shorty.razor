@@ -1,59 +1,61 @@
-﻿@rendermode InteractiveServer
-
-@page "/"
+﻿@page "/"
+@using global::Shorty.Domain.Models.Request
+@using global::Shorty.Domain.Models.Response
 @inject HttpClient Http
+@rendermode InteractiveServer
 
 <h3>Create Shorty</h3>
 
-<div>
-    <label>Email:</label>
-    <input @bind="email" placeholder="Enter email" />
+<div class="mb-3">
+    <label for="urlInput" class="form-label">Enter URL:</label>
+    <input id="urlInput" class="form-control" @bind="model.Url" />
 </div>
 
-<div>
-    <label>URL:</label>
-    <input @bind="url" placeholder="Enter URL" />
+<div class="mb-3">
+    <label for="emailInput" class="form-label">Your Email:</label>
+    <input id="emailInput" class="form-control" @bind="model.Email" />
 </div>
 
-<button @onclick="CreateShortyAsync">Create Short URL</button>
+<button class="btn btn-primary" @onclick="CreateShorty">Create</button>
 
-<p>@resultMessage</p>
+@if (!string.IsNullOrEmpty(createdUrl))
+{
+    <div class="alert alert-success mt-3">
+        Short link created:
+        <a href="@createdUrl" target="_blank">@createdUrl</a>
+    </div>
+}
+else if (errorMessage is not null)
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
 
 @code {
-    private string email;
-    private string url;
-    private string resultMessage;
+    private ShortyCreateRequestModel model = new();
+    private string? createdUrl;
+    private string? errorMessage;
 
-    private async Task CreateShortyAsync()
+    private async Task CreateShorty()
     {
         try
         {
-            var requestData = new { Email = email, Url = url };
-            var response = await Http.PostAsJsonAsync("api/shorty", requestData);
-
+            var response = await Http.PostAsJsonAsync("api/shorty", model);
             if (response.IsSuccessStatusCode)
             {
-                // ✅ Read the response as your ShortLink model
-                var data = await response.Content.ReadFromJsonAsync<ShortLink>();
-                resultMessage = $"✅ Short URL created: {data?.ShortyUrl}";
+                var result = await response.Content.ReadFromJsonAsync<ShortyCreateDto>();
+                createdUrl = $"http://localhost:5211/r/{result!.ShortyUrl}";
+                errorMessage = null;
             }
             else
             {
-                resultMessage = $"❌ API error: {response.StatusCode}";
+                createdUrl = null;
+                errorMessage = $"API returned error: {response.StatusCode}";
             }
         }
         catch (Exception ex)
         {
-            resultMessage = $"⚠️ Exception: {ex.Message}";
+            createdUrl = null;
+            errorMessage = $"Request failed: {ex.Message}";
         }
-    }
-
-    // 👇 local class matching your ShortLink model
-    public class ShortLink
-    {
-        public int Id { get; set; }
-        public string Url { get; set; } = string.Empty;
-        public string ShortyUrl { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
     }
 }

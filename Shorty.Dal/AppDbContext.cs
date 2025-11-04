@@ -14,10 +14,10 @@ namespace Shorty.Dal
         public AppDbContext() { } 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<User> Users { get; set; }
-        public DbSet<ShortLink> Shorties { get; set; }
+		public DbSet<User> Users => Set<User>();
+		public DbSet<ShortLink> Shorties => Set<ShortLink>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ShortLink>()
                 .HasOne(s => s.User)
@@ -25,21 +25,14 @@ namespace Shorty.Dal
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            base.OnModelCreating(modelBuilder);
-        }
+			modelBuilder.Entity<ShortLink>()
+	            .Property(s => s.Clicks)
+	            .HasDefaultValue(0);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-            string connectionString = "Host=ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech;" +
-                                     "Username=neondb_owner;" +
-                                     "Password=npg_5jmasY6vLIRC;" +
-                                     "Database=aregdb;" +
-                                     "SSL Mode=Require;" +
-                                     "Trust Server Certificate=true;" +
-                                     "Channel Binding=Require;";
-            optionsBuilder.UseNpgsql(connectionString);
-            base.OnConfiguring(optionsBuilder);
+			modelBuilder.Entity<ShortLink>()
+				.Property(s => s.LastAccessed)
+				.HasColumnType("timestamp with time zone");
+			base.OnModelCreating(modelBuilder);
         }
     }
 }
