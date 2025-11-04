@@ -12,8 +12,8 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023163329_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251103133126_AddIsActiveAndDeletedAt")]
+    partial class AddIsActiveAndDeletedAt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shorty.Dal.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,10 +33,16 @@ namespace Shorty.Dal.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ShortyUrl")
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ShortUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -49,12 +55,15 @@ namespace Shorty.Dal.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ShortUrl")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Shorties");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,10 +80,31 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Shorty", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.Visit", b =>
                 {
-                    b.HasOne("Shorty.Dal.User", "User")
-                        .WithMany("Shorties")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ShortyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("VisitedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShortyId");
+
+                    b.ToTable("Visits");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyLink", b =>
+                {
+                    b.HasOne("Shorty.Dal.Entities.User", "User")
+                        .WithMany("ShortyLinks")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -82,9 +112,25 @@ namespace Shorty.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.User", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.Visit", b =>
                 {
-                    b.Navigation("Shorties");
+                    b.HasOne("Shorty.Dal.Entities.ShortyLink", "ShortyLink")
+                        .WithMany("Visits")
+                        .HasForeignKey("ShortyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShortyLink");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyLink", b =>
+                {
+                    b.Navigation("Visits");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.User", b =>
+                {
+                    b.Navigation("ShortyLinks");
                 });
 #pragma warning restore 612, 618
         }

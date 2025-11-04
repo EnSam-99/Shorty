@@ -1,0 +1,127 @@
+@page "/shorty-deletion"
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<h3>Delete Shorty – No API Changes</h3>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label>ID:</label>
+        <input @bind="inputId" type="number" class="form-control" placeholder="Enter ID" />
+    </div>
+    <div class="col-md-4">
+        <label>Email:</label>
+        <input @bind="inputEmail" class="form-control" placeholder="Enter email" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <button class="btn btn-primary w-100" @onclick="LoadLinks">Show Links</button>
+    </div>
+</div>
+
+@if (links != null && links.Any())
+{
+    <div class="alert alert-info">
+        Found @links.Count link(s) – click Delete to remove from database
+    </div>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Short URL</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var link in links)
+            {
+                <tr>
+                    <td><strong>@link.Id</strong></td>
+                    <td><a href="@link.ShortyUrl" target="_blank">@link.ShortyUrl</a></td>
+                    <td>@(link.UserEmail)</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" 
+                                @onclick="() => DeleteSingle(link.Id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (links != null)
+{
+    <p class="text-muted">No links found with this ID or Email.</p>
+}
+
+<p>@message</p>
+
+@code {
+    private int? inputId;
+    private string inputEmail = "";
+    private List<ShortyLink> links = new();
+    private string message = "";
+
+    private async Task LoadLinks()
+    {
+        message = "";
+        links.Clear();
+
+        try
+        {
+            // 1. Բերում ենք բոլոր URL-ները
+            var allLinks = await Http.GetFromJsonAsync<List<ShortyLink>>("api/shorty");
+
+            if (allLinks == null)
+            {
+                message = "Failed to load data";
+                return;
+            }
+
+            // 2. Ֆիլտրում ենք Blazor-ում (ոչ API-ում!)
+            links = allLinks
+                .Where(l => 
+                    (!inputId.HasValue || l.Id == inputId.Value) &&
+                    (string.IsNullOrEmpty(inputEmail) || l.UserEmail == inputEmail))
+                .ToList();
+
+            message = links.Any() 
+                ? $"Found {links.Count} link(s)"
+                : "No links match your filter";
+        }
+        catch (Exception ex)
+        {
+            message = "Error: " + ex.Message;
+        }
+    }
+
+    private async Task DeleteSingle(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", 
+            $"Delete ID {id}? This will remove it from the database!");
+
+        if (!confirm) return;
+
+        var response = await Http.DeleteAsync($"api/shorty/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = $"ID {id} deleted!";
+            await LoadLinks(); // ← live update
+        }
+        else
+        {
+            message = $"Failed to delete ID {id}";
+        }
+    }
+
+    // ← Նույն model-ը, ինչ API-ն վերադարձնում է
+    public class ShortyLink
+    {
+        public int Id { get; set; }
+        public string ShortyUrl { get; set; } = "";
+        public string UserEmail { get; set; } = "";
+    }
+}

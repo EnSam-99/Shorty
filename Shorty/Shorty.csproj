@@ -1,41 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Shorty.Dal\Shorty.Dal.csproj" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-<<<<<<< HEAD
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		  <PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<ProjectReference Include="..\Shorty.Domain\Shorty.Domain.csproj" />
 
-		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <ProjectReference Include="..\Shorty.Domain\Shorty.Domain.csproj" />
+
+        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
 
 
-=======
-		<ProjectReference Include="..\Shorty.Dal\Shorty.Dal.csproj" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<ProjectReference Include="..\Shorty.Domain\Shorty.Domain.csproj" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
->>>>>>> refs/heads/yelena/create-shorty
+    </ItemGroup>
 
-		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+    <ItemGroup>
+      <ProjectReference Include="..\Shorty.Dal\Shorty.Dal.csproj" />
+    </ItemGroup>
 
-
-	</ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal;
 using Shorty.Domain.Abstraction;
+using Shorty.Dal.Entities;
 using Shorty.Domain.Models.Request;
 using Shorty.Domain.Models.Response;
 
@@ -20,11 +21,11 @@ public class ShortyUrlService(AppDbContext dbContext) : IShortyUrlService
             await dbContext.SaveChangesAsync();
         }
 
-        var newShorty = new ShortLink
+        var newShorty = new ShortyLink()
         {
             Url = model.Url,
-            ShortyUrl = shortCode,
-            CreatedDate = DateTime.UtcNow,
+            ShortUrl = shortCode,
+            CreatedAt = DateTime.UtcNow,
             UserId = user.Id
         };
 
@@ -34,7 +35,8 @@ public class ShortyUrlService(AppDbContext dbContext) : IShortyUrlService
         return new ShortyCreateDto()
         {
             Id = newShorty.Id,
-            ShortyUrl = newShorty.ShortyUrl
+            ShortyUrl = newShorty.ShortUrl
         };
     }
+    
 }

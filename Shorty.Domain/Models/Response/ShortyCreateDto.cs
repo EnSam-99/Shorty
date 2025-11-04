@@ -1,4 +1,4 @@
-﻿namespace Shorty.Domain.Models.Response;
+namespace Shorty.Domain.Models.Response;
 
 public class ShortyCreateDto
 {

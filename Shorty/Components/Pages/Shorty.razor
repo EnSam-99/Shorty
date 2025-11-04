@@ -20,40 +20,40 @@
 <p>@resultMessage</p>
 
 @code {
-    private string email;
-    private string url;
-    private string resultMessage;
+private string email;
+private string url;
+private string resultMessage;
 
-    private async Task CreateShortyAsync()
-    {
-        try
-        {
-            var requestData = new { Email = email, Url = url };
-            var response = await Http.PostAsJsonAsync("api/shorty", requestData);
+private async Task CreateShortyAsync()
+{
+try
+{
+var requestData = new { Email = email, Url = url };
+var response = await Http.PostAsJsonAsync("api/shorty", requestData);
 
-            if (response.IsSuccessStatusCode)
-            {
-                // ✅ Read the response as your ShortLink model
-                var data = await response.Content.ReadFromJsonAsync<ShortLink>();
-                resultMessage = $"✅ Short URL created: {data?.ShortyUrl}";
-            }
-            else
-            {
-                resultMessage = $"❌ API error: {response.StatusCode}";
-            }
-        }
-        catch (Exception ex)
-        {
-            resultMessage = $"⚠️ Exception: {ex.Message}";
-        }
-    }
+if (response.IsSuccessStatusCode)
+{
+// ✅ Read the response as your ShortLink model
+var data = await response.Content.ReadFromJsonAsync<ShortLink>();
+resultMessage = $"✅ Short URL created: {data?.ShortyUrl}";
+}
+else
+{
+resultMessage = $"❌ API error: {response.StatusCode}";
+}
+}
+catch (Exception ex)
+{
+resultMessage = $"⚠️ Exception: {ex.Message}";
+}
+}
 
-    // 👇 local class matching your ShortLink model
-    public class ShortLink
-    {
-        public int Id { get; set; }
-        public string Url { get; set; } = string.Empty;
-        public string ShortyUrl { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
-    }
+// 👇 local class matching your ShortLink model
+public class ShortLink
+{
+public int Id { get; set; }
+public string Url { get; set; } = string.Empty;
+public string ShortyUrl { get; set; } = string.Empty;
+public DateTime CreatedDate { get; set; }
+}
 }

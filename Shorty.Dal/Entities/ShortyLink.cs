@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shorty.Dal.Entities;
 
-public class Shorty
+public class ShortyLink
 {
     [Key]
     public int Id { get; set; }
@@ -15,5 +15,9 @@ public class Shorty
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
-    
+
+    public ICollection<Visit> Visits = new List<Visit>();
+    public bool IsActive { get; set; } = true;
+    public DateTime? DeletedAt { get; set; }
+
 }

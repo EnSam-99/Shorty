@@ -1,27 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using Shorty.Domain.DTOs;
-using Shorty.Services;
-
-namespace Shorty.Controllers;
-[ApiController]
-[Route("api/shorty")]
-public class ShortyController : ControllerBase
+using Shorty.Domain.Abstraction;
+using Shorty.Domain.Models.Request;
+namespace Shorty.Controllers
 {
-    private readonly ShortyService _shortyService;
-
-    public ShortyController(ShortyService shortyService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ShortyController(IShortyUrlService shortyUrlService) : ControllerBase
     {
-        _shortyService = shortyService;
-    }
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] CreateRequestModel request)
-    {
-        if (!ModelState.IsValid)
+        [HttpPost]
+        public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateRequestModel model)
         {
-            return BadRequest(ModelState);
-        }
+            var shorty = await shortyUrlService.CreateShortyAsync(model);
 
-        string shortCode = await _shortyService.CreateShortyAsync(request);
-        return Created($"/api/shorty/{shortCode}", new { ShortUrl = shortCode });
+            return Ok(shorty);
+        }
     }
 }

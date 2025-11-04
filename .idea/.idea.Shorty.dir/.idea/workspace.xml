@@ -9,7 +9,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="de645e35-3c1c-4c7a-b6fd-6928a9c0b12c" name="Changes" comment="skeleton" />
+    <list default="true" id="de645e35-3c1c-4c7a-b6fd-6928a9c0b12c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Shorty/Controllers/DeletionController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Shorty.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Shorty.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/AppDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Entities/Shorty.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Entities/ShortyLink.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Entities/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Entities/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251023163329_InitialCreate.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251023163329_InitialCreate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251027111649_InitialCreate.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251027111649_InitialCreate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/ShortLink.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Shorty.Dal.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Shorty.Dal.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/User.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IShortyUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IShortyUrlService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/DTOs/CreateRequestModel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Models/Request/ShortyCreateRequestModel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Models/Response/ShortyCreateDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyUrlService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Layout/NavMenu.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Error.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Pages/Error.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Home.razor" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Shorty.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Pages/Shorty.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Controllers/ShortyController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Controllers/ShortyController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Shorty.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Shorty.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/appsettings.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,31 +49,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "YelenaGhushchyan"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;YelenaGhushchyan&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/EnSam-99/Shorty.git",
-    "accountId": "519e28be-8f7e-4736-a255-9d66426271fc"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/EnSam-99/Shorty.git&quot;,
+    &quot;accountId&quot;: &quot;519e28be-8f7e-4736-a255-9d66426271fc&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/AppDbContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/AppDbContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/AppDbContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/Entities/Shorty.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/Entities/Shorty.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty.Dal/Entities/Shorty.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty/Components/Layout/NavMenu.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty/Components/Pages/Home.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty/Components/Pages/Home.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Shorty.Dal/ShortLink.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Shorty.Domain/Abstraction/IShortyUrlService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Shorty.Domain/Services/ShortyUrlService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Shorty/Components/Pages/Shorty.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/yelenaghushchyan/RiderProjects/Shorty/Shorty/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file:///usr/local/share/dotnet/sdk-manifests/9.0.100/microsoft.net.workload.mono.toolchain.net7/9.0.8/WorkloadManifest.targets" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -59,7 +87,7 @@
   &quot;keyToString&quot;: {
     &quot;.NET Launch Settings Profile.Shorty: http.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;yelena/create-shorty&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;yelena/feature2&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -67,8 +95,16 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
   }
 }</component>
+  <component name="RiderProblemsViewState">
+    <option name="proportion" value="0.16732673" />
+  </component>
   <component name="RunManager" selected=".NET Launch Settings Profile.Shorty: http">
     <configuration name="Shorty: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Shorty/Shorty.csproj" />
@@ -140,6 +176,19 @@
       <workItem from="1761667988049" duration="113000" />
       <workItem from="1761668111647" duration="3895000" />
       <workItem from="1761725885529" duration="14315000" />
+      <workItem from="1761756789021" duration="259000" />
+      <workItem from="1761758686353" duration="7161000" />
+      <workItem from="1761816848837" duration="11747000" />
+      <workItem from="1761912018209" duration="4000" />
+      <workItem from="1761941652966" duration="3089000" />
+      <workItem from="1762019798273" duration="650000" />
+      <workItem from="1762020546318" duration="6664000" />
+      <workItem from="1762028947617" duration="6435000" />
+      <workItem from="1762170175149" duration="2980000" />
+      <workItem from="1762174012003" duration="9175000" />
+      <workItem from="1762191580518" duration="1037000" />
+      <workItem from="1762203553538" duration="2961000" />
+      <workItem from="1762252783452" duration="6432000" />
     </task>
     <task id="LOCAL-00001" summary="skeleton">
       <option name="closed" value="true" />
@@ -168,7 +217,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="yelena/feature2" />
                       </list>
                     </value>
                   </entry>
