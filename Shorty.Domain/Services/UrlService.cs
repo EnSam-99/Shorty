@@ -1,5 +1,5 @@
 ﻿using Shorty.Dal.Db;
-using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 using Shorty.Services.IServices;
@@ -8,18 +8,17 @@ using System.Collections.Generic;
 
 namespace Shorty.Services
 {
-    public class UrlService: IUrlService<ShortyModel>
+    public class UrlService: IUrlService<ShortyEntity>
     {
-        private IShortyUrlRepository<ShortyModel> _shortyUrlRepository;
-        private IShortCodeHistoryRepository<ShortyHistoryModel> _shortCodeHistoryRepository;
+        private IShortyUrlRepository<ShortyEntity> _shortyUrlRepository;
+        private IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository;
 
-        public UrlService(IShortyUrlRepository<ShortyModel> shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryModel> shortCodeHistoryRepository)
+        public UrlService(IShortyUrlRepository<ShortyEntity> shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> shortCodeHistoryRepository)
         {
             _shortyUrlRepository = shortyUrlRepository;
             _shortCodeHistoryRepository = shortCodeHistoryRepository;
         }
-
-        public async Task<ShortyModel> CreateShortAsync(string originalUrl, Guid userId)
+        public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
         {
 
             if (string.IsNullOrEmpty(originalUrl))
@@ -33,20 +32,17 @@ namespace Shorty.Services
             {
                 throw new ArgumentException("Url is exist");
             }
-            ;
 
-            var shorty = new ShortyModel
+            var shorty = new ShortyEntity
             {
-                CreatedAt = DateTime.UtcNow,
-                Id = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,               
                 ShortCode = shortUrl,
                 Url = originalUrl,
                 UserId = userId,
             };
-
             await _shortyUrlRepository.AddShortyAsync(shorty);
 
-            var history = new ShortyHistoryModel
+            var history = new ShortyHistoryEntity
             {
                 ShortyId = shorty.Id,
                 ChangedAt = DateTime.UtcNow,
@@ -54,13 +50,9 @@ namespace Shorty.Services
                 OldShortUrl = shortUrl
             };
             await _shortCodeHistoryRepository.AddHistoryAsync(history);
-
-
             return shorty;
-
         }
-
-        public async Task<IEnumerable<ShortyModel>> GetAllShortCodesAsync()
+        public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
         {
             var list = await _shortyUrlRepository.GetAllShortyAsync();
             if (list == null || !list.Any())
@@ -79,9 +71,9 @@ namespace Shorty.Services
             return url;
         }
 
-        public async Task UpdateShortCodAsync(Guid id, string newShortyCode)
+        public async Task UpdateShortCodAsync(int id, string newShortyCode)
         {
-            if (id == Guid.Empty) 
+            if (id == 0) 
             {
                 throw new ArgumentNullException($"Id '{nameof(id)}' is empty");
             }
@@ -90,10 +82,10 @@ namespace Shorty.Services
                 throw new ArgumentException("Value cannot be empty.", nameof(newShortyCode));
             }
 
-            var newShortCode = new ShortyModel
+            var newShortCode = new ShortyEntity
             {
                 Id = id,
-                LastAccessedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                ShortCode = newShortyCode,
 
             };
@@ -105,7 +97,7 @@ namespace Shorty.Services
             }
             var shorty = entity.ShortCode;
 
-            var history = new ShortyHistoryModel
+            var history = new ShortyHistoryEntity
             {
                 ShortyId = id,
                 ChangedAt = DateTime.UtcNow,
@@ -113,7 +105,7 @@ namespace Shorty.Services
                 OldShortUrl = shorty
             };
 
-            if (await _shortyUrlRepository.ExsistsId(id))
+            if (await _shortyUrlRepository.ExistsId(id))
             {
                 await _shortyUrlRepository.UpdateAsync(newShortCode);
                 await _shortCodeHistoryRepository.AddHistoryAsync(history);
@@ -122,7 +114,6 @@ namespace Shorty.Services
             {
                 throw new ArgumentNullException($"Id '{nameof(id)}' is not found");
             }
-
         }
     }
 }

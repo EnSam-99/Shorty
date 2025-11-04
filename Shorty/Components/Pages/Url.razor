@@ -78,7 +78,7 @@
             var user = await userResp.Content.ReadFromJsonAsync<UserDto>();
             if (user == null)
             {
-                error = "User creation failed (no data).";
+                error = "UserEntity creation failed (no data).";
                 return;
             }
 

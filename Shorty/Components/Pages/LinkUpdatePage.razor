@@ -55,9 +55,9 @@
 
 @code {
     private List<ShortyDto> _shortCodes = new();
-    private Guid? _selectedId;           
+    private int? _selectedId;           
     private bool _loading = true;
-    private string inputNewUrl = string.Empty;
+    private string inputNewUrl = default;
     private bool isBusy;
     private string? _msg;
     private bool _isError;

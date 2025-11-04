@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shorty.Dal.DbModel.Repositories;
+namespace Shorty.Dal.Db.IRepositories;
 
 public interface IUserRepository<T>
 {

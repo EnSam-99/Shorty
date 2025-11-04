@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal.Entities;
 
-public class ShortyHistoryModel
+public class ShortyHistoryEntity
 {
-    [Key] public Guid Id { get; set; }    
+    [Key] public int Id { get; set; }    
     [MaxLength(255)] public string? OldShortUrl { get; set; } 
     [Required, MaxLength(255)] public string NewShortUrl { get; set; } = null!;
     [Required] public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
-
-    [Required] public Guid ShortyId { get; set; }
-    [ForeignKey(nameof(ShortyId))] public ShortyModel Shorty { get; set; } = null!;
+    [Required] public int ShortyId { get; set; }
+    [ForeignKey(nameof(ShortyId))] public ShortyEntity Shorty { get; set; } = null!;
 }

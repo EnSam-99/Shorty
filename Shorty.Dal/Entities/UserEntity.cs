@@ -6,15 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Shorty.Dal.Models;
-
-public class User
+public class UserEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; } = default!;
     [Required]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = default!;
     [Required]
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = default!;
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
-
-   public List<ShortyModel> Shorties { get; set; } = new();
+   public List<ShortyEntity> Shorties { get; set; } = new();
 }

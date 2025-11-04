@@ -1,20 +1,15 @@
-﻿using Shorty.Dal.DbModel.Repositories;
+﻿using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Models;
 using Shorty.Models;
 using Shorty.Services.IServices;
 
 namespace Shorty.Services;
 
-public class UserService: IUserService<User>
+public class UserService: IUserService<UserEntity>
 {
-    private readonly IUserRepository<User> _userRepository;
-
-    public UserService(IUserRepository<User> userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
-    public async Task<User> CreateUserAsync(string userName, string email)
+    private readonly IUserRepository<UserEntity> _userRepository;
+    public UserService(IUserRepository<UserEntity> userRepository)=>  _userRepository = userRepository;   
+    public async Task<UserEntity> CreateUserAsync(string userName, string email)
     {
         if (string.IsNullOrEmpty(userName))
         {
@@ -27,20 +22,17 @@ public class UserService: IUserService<User>
 
         var exist = await _userRepository.ExistsByUser(userName, email);
 
-
         if (exist)
         {
-            Console.WriteLine("User is Exists");
+            throw new ArgumentException(" User is Exists");
         }
 
-        var user = new User
+        var user = new UserEntity
         {
             Name = userName,
-            Email = email,
-            Id = Guid.NewGuid()
+            Email = email            
         };
         await _userRepository.AddUserAsync(user);
         return user;
     }
-
 }

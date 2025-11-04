@@ -9,5 +9,5 @@ namespace Shorty.Domain.Models;
 public class CreateShortyRequestDto
 {
     public string Url { get; set; } = default!;
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 }

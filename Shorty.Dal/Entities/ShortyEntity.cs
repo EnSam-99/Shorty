@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace Shorty.Dal.Models;
 
-public class ShortyModel
+public class ShortyEntity
 {
     [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();  
+    public int Id { get; set; } = default!;  
     [Required, MaxLength(2048)]
-    public string Url { get; set; } = string.Empty; 
+    public string Url { get; set; } = default!; 
     [Required, MaxLength(64)]
-    public string ShortCode { get; set; } = string.Empty;
+    public string ShortCode { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public long Clicks { get; set; } = 0;
     public bool IsActive { get; set; } = true;
-    public DateTime? LastAccessedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     [ForeignKey(nameof(User))]
-    public Guid UserId { get; set; }
-    public User? User { get; set; }
+    public int UserId { get; set; }
+    public UserEntity? User { get; set; }
 }

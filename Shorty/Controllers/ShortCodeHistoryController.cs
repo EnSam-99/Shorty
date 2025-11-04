@@ -21,7 +21,7 @@ public class ShortCodeHistoryController : ControllerBase
 
     public sealed class CreateHistoryRequest
     {
-        public Guid ShortyId { get; set; }
+        public int ShortyId { get; set; }
         public string? OldShort { get; set; }
         public string NewShort { get; set; } = null!;
     }

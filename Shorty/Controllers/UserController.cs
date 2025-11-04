@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Models;
 using Shorty.Models;
 using Shorty.Services;
@@ -11,9 +11,9 @@ namespace Shorty.Controllers;
 [ApiController]
 public class UserController: ControllerBase
 {
-    readonly IUserService<User> _userService;
+    readonly IUserService<UserEntity> _userService;
   
-    public UserController(IUserService<User> userService)
+    public UserController(IUserService<UserEntity> userService)
     {
         _userService = userService;
     }

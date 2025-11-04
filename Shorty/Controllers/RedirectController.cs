@@ -8,13 +8,9 @@ namespace Shorty.Controllers
     [Route("api/[controller]")]
     public class RedirectController: ControllerBase
     {
-        private readonly IUrlService<ShortyModel> _service;
+        private readonly IUrlService<ShortyEntity> _service;
 
-
-        public RedirectController(IUrlService<ShortyModel> service)
-        {
-            _service = service;
-        }
+        public RedirectController(IUrlService<ShortyEntity> service)=> _service = service;        
 
         [HttpGet("{code}")]
         public async Task<IActionResult> Get(string code)

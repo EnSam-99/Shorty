@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Controllers;
-using Shorty.Dal.Db;
-using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal;
+using Shorty.Dal.Db.IRepositories;
+using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 using Shorty.Domain.Services.IServices;
@@ -24,11 +25,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.AddScoped<IUserRepository<User>, UserRepository>();
-builder.Services.AddScoped<IUserService<User>, UserService>();
-builder.Services.AddScoped<IShortyUrlRepository<ShortyModel>, ShortyUrlRepository>();
-builder.Services.AddScoped<IUrlService<ShortyModel>, UrlService>();
-builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryModel>, ShortCodeHistoryRepository>();
+builder.Services.AddScoped<IUserRepository<UserEntity>, UserRepository>();
+builder.Services.AddScoped<IUserService<UserEntity>, UserService>();
+builder.Services.AddScoped<IShortyUrlRepository<ShortyEntity>, ShortyUrlRepository>();
+builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
+builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 
 builder.Services.AddControllers();

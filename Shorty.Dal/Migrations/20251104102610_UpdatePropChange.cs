@@ -5,7 +5,7 @@
 namespace Shorty.Dal.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateHistoryDb : Migration
+    public partial class UpdatePropChange : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

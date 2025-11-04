@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal.DbModel.Repositories;
+using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 using Shorty.Domain.Models;
@@ -14,9 +14,9 @@ namespace Shorty.Controllers;
 [ApiController]
 public class ShortyController: ControllerBase
 {
-    private readonly IUrlService<ShortyModel> _service;
+    private readonly IUrlService<ShortyEntity> _service;
 
-    public ShortyController(IUrlService<ShortyModel> service)
+    public ShortyController(IUrlService<ShortyEntity> service)
     {
         _service = service;
     }
@@ -40,7 +40,7 @@ public class ShortyController: ControllerBase
         if (shorty is null)
             return BadRequest("Body is required.");
 
-        if (shorty.ShortyId == Guid.Empty)
+        if (shorty.ShortyId == 0)
             return BadRequest("ShortyId is required.");
 
         if (string.IsNullOrWhiteSpace(shorty.NewShort))
