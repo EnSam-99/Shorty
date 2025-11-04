@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shorty.Domain.Abstraction;
-using Shorty.Domain.Model.Request;
+using Shorty.Domain.Models.Request;
 
 namespace Shorty.Controllers
 {
@@ -17,7 +17,7 @@ namespace Shorty.Controllers
 
 		
 		[HttpPost]
-		public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateRequest model)
+		public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateRequestModel model)
 		{
 			var shorty = await _service.CreateShortyAsync(model);
 			return Ok(shorty);

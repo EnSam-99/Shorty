@@ -19,9 +19,9 @@ builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
 // ==================== HTTP CLIENT (for Blazor pages) ====================
-builder.Services.AddHttpClient(sp =>
+builder.Services.AddHttpClient("ServerAPI", client =>
 {
-	sp.BaseAddress = new Uri("http://localhost:5211/");
+	client.BaseAddress = new Uri("http://localhost:5211/");
 });
 
 // ==================== DEPENDENCY INJECTION ====================

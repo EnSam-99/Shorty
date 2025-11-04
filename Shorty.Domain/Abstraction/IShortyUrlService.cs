@@ -8,7 +8,7 @@ public interface IShortyUrlService
     Task<ShortyCreateDto> CreateShortyAsync(ShortyCreateRequestModel model);
 	Task<List<ShortyListDto>> GetShortiesByEmailAsync(string email);
 	Task<string?> ResolveAsync(string shortCode);
-	Task<ShortyStatsDto?> GetStatsAsync(string shortCode);
+	Task<ShortyStatsDto?> GetStatsByCodeAsync(string shortCode);
 	Task<string?> ResolveAndTrackAsync(string shortCode);
-	Task<List<(string ShortCode, int Clicks)>> GetTopAsync(int take);
+	Task<List<(string ShortCode, int Clicks)>> GetTopShortiesAsync(int take);
 }

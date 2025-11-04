@@ -1,5 +1,6 @@
 ﻿@page "/"
-@using Shorty.Domain.Model.Request
+@using global::Shorty.Domain.Models.Request
+@using global::Shorty.Domain.Models.Response
 @inject HttpClient Http
 @rendermode InteractiveServer
 
@@ -24,22 +25,37 @@
         <a href="@createdUrl" target="_blank">@createdUrl</a>
     </div>
 }
+else if (errorMessage is not null)
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
 
 @code {
-    private ShortyCreateRequest model = new();
+    private ShortyCreateRequestModel model = new();
     private string? createdUrl;
+    private string? errorMessage;
 
     private async Task CreateShorty()
     {
-        var response = await Http.PostAsJsonAsync("api/shorty", model);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var result = await response.Content.ReadFromJsonAsync<ShortyCreateResponse>();
-            createdUrl = $"http://localhost:5211/r/{result!.ShortUrl}";
+            var response = await Http.PostAsJsonAsync("api/shorty", model);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ShortyCreateDto>();
+                createdUrl = $"http://localhost:5211/r/{result!.ShortyUrl}";
+                errorMessage = null;
+            }
+            else
+            {
+                createdUrl = null;
+                errorMessage = $"API returned error: {response.StatusCode}";
+            }
         }
-        else
+        catch (Exception ex)
         {
             createdUrl = null;
+            errorMessage = $"Request failed: {ex.Message}";
         }
     }
 }
