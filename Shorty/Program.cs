@@ -11,13 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHttpClient("ServerAPI", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5211/");
 });
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
 builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -26,6 +28,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSingleton<TestRepository>();
 builder.Services.AddControllers();
+
 
 
 var app = builder.Build();
@@ -40,6 +43,7 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger";
     });
 }
+
 
 app.UseRouting();
 

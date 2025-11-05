@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shorty.Dal
+namespace Shorty.Dal.Entities
 {
     public class ShortLink
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -20,5 +21,7 @@ namespace Shorty.Dal
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public int UserId { get; set; }
         public User? User { get; set; }
+
+        public ICollection<Visit> Visits { get; set; } = new List<Visit>();
     }
 }

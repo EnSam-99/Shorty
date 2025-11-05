@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shorty.Dal
+namespace Shorty.Dal.Entities
 {
     public class User
     {
@@ -15,7 +15,7 @@ namespace Shorty.Dal
         [Required, EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        public ICollection<ShortLink> Shorties;
+        public ICollection<ShortLink> Shorties { get; set; } = new List<ShortLink>();
 
     }
 }

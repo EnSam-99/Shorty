@@ -6,4 +6,6 @@ namespace Shorty.Domain.Abstraction;
 public interface IShortyUrlService
 {
     Task<ShortyCreateDto> CreateShortyAsync(ShortyCreateRequestModel model);
+    Task<string?> GetOriginalUrlAsync(string shortCode);
+
 }
