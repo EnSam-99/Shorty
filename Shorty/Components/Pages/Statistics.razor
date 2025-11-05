@@ -1,0 +1,50 @@
+﻿@page "/statistics"
+<Component1 /> 
+@using global::Shorty.Domain.Models.Response
+@inject HttpClient Http // Required to call the API endpoint
+
+<h3>Short Link Statistics</h3>
+
+@if (stats == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>URL (Original)</th>
+                <th>Clicks</th>
+                <th>Last Accessed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in stats)
+            {
+                <tr>
+                    <td>@s.Url</td>
+                    <td>@s.Clicks</td>
+                    <td>@(s.LastAccessed.HasValue? s.LastAccessed.Value.ToLocalTime().ToString("g") : "N/A")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<ShortyStatDto>? stats;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            stats = await Http.GetFromJsonAsync<ShortyStatDto[]>("api/ShortyStatistics");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching statistics: {ex.Message}");
+        }
+    }
+
+}

@@ -20,5 +20,7 @@ namespace Shorty.Dal
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public int UserId { get; set; }
         public User? User { get; set; }
+        public ICollection<Visit> Visits { get; set; } = new List<Visit>();
+
     }
 }

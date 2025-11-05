@@ -33,7 +33,6 @@
 
             if (response.IsSuccessStatusCode)
             {
-                // ✅ Read the response as your ShortLink model
                 var data = await response.Content.ReadFromJsonAsync<ShortLink>();
                 resultMessage = $"✅ Short URL created: {data?.ShortyUrl}";
             }
@@ -48,7 +47,6 @@
         }
     }
 
-    // 👇 local class matching your ShortLink model
     public class ShortLink
     {
         public int Id { get; set; }

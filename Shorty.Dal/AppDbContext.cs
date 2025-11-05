@@ -11,11 +11,13 @@ namespace Shorty.Dal
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext() { } 
+        public AppDbContext() { }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<User> Users { get; set; }
         public DbSet<ShortLink> Shorties { get; set; }
+        
+        public DbSet<Visit> Visits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +26,12 @@ namespace Shorty.Dal
                 .WithMany(u => u.Shorties)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Visit>()
+             .HasOne(v => v.ShortLink)
+             .WithMany(s => s.Visits)
+             .HasForeignKey(v => v.ShortLinkId)
+             .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

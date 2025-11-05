@@ -18,6 +18,8 @@ builder.Services.AddHttpClient("ServerAPI", client =>
 });
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
 builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
+builder.Services.AddScoped<ShortyStatisticsService>();
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -33,7 +35,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); 
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Shorty API v1");
@@ -46,8 +48,8 @@ app.UseRouting();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+//app.UseSwagger();
+//app.UseSwaggerUI();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -6,18 +6,25 @@ using Shorty.Domain.Models.Response;
 
 namespace Shorty.Domain.Services;
 
-public class ShortyUrlService(AppDbContext dbContext) : IShortyUrlService
+public class ShortyUrlService : IShortyUrlService
 {
+    private readonly AppDbContext _context;
+
+    public ShortyUrlService(AppDbContext context)
+    {
+        _context = context;
+    }
+
     public async Task<ShortyCreateDto> CreateShortyAsync(ShortyCreateRequestModel model)
     {
         var shortCode = Guid.NewGuid().ToString().Substring(0, 6);
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
         if (user == null)
         {
             user = new User { Email = model.Email };
-            await dbContext.Users.AddAsync(user);
-            await dbContext.SaveChangesAsync();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
         }
 
         var newShorty = new ShortLink
@@ -28,13 +35,34 @@ public class ShortyUrlService(AppDbContext dbContext) : IShortyUrlService
             UserId = user.Id
         };
 
-        await dbContext.Shorties.AddAsync(newShorty);
-        await dbContext.SaveChangesAsync();
+        await _context.Shorties.AddAsync(newShorty);
+        await _context.SaveChangesAsync();
 
-        return new ShortyCreateDto()
+
+        return new ShortyCreateDto
         {
             Id = newShorty.Id,
             ShortyUrl = newShorty.ShortyUrl
         };
     }
+    public async Task<string?> GetOriginalUrlAsync(string shortCode)
+    {
+        var shortLink = await _context.Shorties
+                 .FirstOrDefaultAsync(s => s.ShortyUrl == shortCode);
+
+        if (shortLink == null)
+            return null;
+
+        var visit = new Visit
+        {
+            ShortLinkId = shortLink.Id,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        _context.Visits.Add(visit);
+        await _context.SaveChangesAsync();
+
+        return shortLink.Url;
+    }
 }
+
