@@ -17,6 +17,7 @@ public class ShortyEntity
     [Required, MaxLength(64)]
     public string ShortCode { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime ExpiredAt { get; set; }
     public long Clicks { get; set; } = 0;
     public bool IsActive { get; set; } = true;
     public DateTime? UpdatedAt { get; set; }

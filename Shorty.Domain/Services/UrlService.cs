@@ -35,7 +35,8 @@ namespace Shorty.Services
 
             var shorty = new ShortyEntity
             {
-                CreatedAt = DateTime.UtcNow,               
+                CreatedAt = DateTime.UtcNow,
+                ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)),
                 ShortCode = shortUrl,
                 Url = originalUrl,
                 UserId = userId,
