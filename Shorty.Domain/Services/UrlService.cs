@@ -25,7 +25,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         var shorty = new ShortyEntity
         {
             CreatedAt = DateTime.UtcNow,
-            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromHours(10)), 
+            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromHours(10)),
             ShortCode = shortUrl,
             Url = originalUrl,
             UserId = userId,
@@ -92,6 +92,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         {
             throw new ArgumentNullException($"{nameof(entity)} is empty");
         }
+
         var shorty = entity.ShortCode;
 
         var history = new ShortyHistoryEntity

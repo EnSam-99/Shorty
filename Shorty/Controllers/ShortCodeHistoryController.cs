@@ -3,7 +3,7 @@ using Shorty.Domain.Services.IServices;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ShortCodeHistoryController (IShortCodeHistoryService _service) : ControllerBase
+public class ShortCodeHistoryController(IShortCodeHistoryService _service) : ControllerBase
 {
     [HttpGet("all-history")]
     public async Task<IActionResult> GetAllAsync()

@@ -5,7 +5,7 @@ using Shorty.Services.IServices;
 namespace Shorty.Services;
 
 public class UserService(IUserRepository<UserEntity> _userRepository) : IUserService<UserEntity>
-{    
+{
     public async Task<UserEntity> CreateUserAsync(string userName, string email)
     {
         if (string.IsNullOrEmpty(userName))

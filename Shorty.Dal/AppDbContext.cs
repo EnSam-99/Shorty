@@ -14,7 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; } = null!;
     public DbSet<ShortyEntity> Shorties { get; set; } = null!;
     public DbSet<ShortyHistoryEntity> Histories { get; set; } = null!;
-
+    public DbSet<VisitedEntity> Visits { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

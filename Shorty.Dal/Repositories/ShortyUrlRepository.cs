@@ -4,8 +4,8 @@ using Shorty.Dal.Models;
 
 namespace Shorty.Dal.Db.Repositories;
 
-public class ShortyUrlRepository (AppDbContext _context): IShortyUrlRepository<ShortyEntity>
-{    
+public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<ShortyEntity>
+{
     public async Task AddShortyAsync(ShortyEntity shortyModel)
     {
         await _context.Shorties.AddAsync(shortyModel);
@@ -55,7 +55,7 @@ public class ShortyUrlRepository (AppDbContext _context): IShortyUrlRepository<S
         if (string.IsNullOrWhiteSpace(shortyModel.ShortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortyModel.ShortCode));
 
-      
+
         await _context.Shorties.Where(x => x.Id == shortyModel.Id)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)
         .SetProperty(l => l.UpdatedAt, DateTime.UtcNow));
@@ -63,7 +63,7 @@ public class ShortyUrlRepository (AppDbContext _context): IShortyUrlRepository<S
 
     public async Task<bool> IsShortCodeValidAsync(string shortCode)
     => await _context.Shorties
-            .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);   
+            .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);
 
     public async Task DeleteIsNotValidShortyByName(string shortyName)
     {
@@ -71,10 +71,10 @@ public class ShortyUrlRepository (AppDbContext _context): IShortyUrlRepository<S
             throw new ArgumentException("ShortyName is empty.", nameof(shortyName));
 
         if (!await _context.Shorties.AnyAsync())
-             throw new InvalidOperationException("Shorties list is empty.");        
+            throw new InvalidOperationException("Shorties list is empty.");
 
         if (!await IsShortCodeValidAsync(shortyName))
-             await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();       
+            await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();
     }
 
     public async Task DeleteAllNotValidShorties()

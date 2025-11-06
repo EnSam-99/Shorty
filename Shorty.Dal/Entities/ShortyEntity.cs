@@ -15,6 +15,7 @@ public class ShortyEntity
     public DateTime ExpiredAt { get; set; }
     public long Clicks { get; set; } = 0;
     public bool IsActive { get; set; } = true;
+    public decimal Score { get; set; } = 0m;
     public DateTime? UpdatedAt { get; set; }
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
