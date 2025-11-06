@@ -44,10 +44,7 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
     {
         if (string.IsNullOrWhiteSpace(shortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
-
-        if (await IsShortCodeValidateAsync(shortCode) == false)
-            throw new InvalidOperationException("ShortCode is not valid or expired.");
-
+       
         var url = await _context.Shorties.AsNoTracking().FirstOrDefaultAsync(s => s.ShortCode == shortCode);
         if (url == null)
             throw new KeyNotFoundException($"Url '{shortCode}' not found.");
@@ -72,7 +69,6 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)
         .SetProperty(l => l.UpdatedAt, DateTime.UtcNow));
     }
-
 
     public async Task<bool> IsShortCodeValidateAsync(string shortCode)
     {

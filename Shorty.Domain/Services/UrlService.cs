@@ -6,115 +6,120 @@ using Shorty.Services.IServices;
 using System;
 using System.Collections.Generic;
 
-namespace Shorty.Services
+namespace Shorty.Services;
+
+public class UrlService : IUrlService<ShortyEntity>
 {
-    public class UrlService: IUrlService<ShortyEntity>
+    private IShortyUrlRepository<ShortyEntity> _shortyUrlRepository;
+    private IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository;
+
+    public UrlService(IShortyUrlRepository<ShortyEntity> shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> shortCodeHistoryRepository)
     {
-        private IShortyUrlRepository<ShortyEntity> _shortyUrlRepository;
-        private IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository;
+        _shortyUrlRepository = shortyUrlRepository;
+        _shortCodeHistoryRepository = shortCodeHistoryRepository;
+    }
+    public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
+    {
 
-        public UrlService(IShortyUrlRepository<ShortyEntity> shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> shortCodeHistoryRepository)
+        if (string.IsNullOrEmpty(originalUrl))
         {
-            _shortyUrlRepository = shortyUrlRepository;
-            _shortCodeHistoryRepository = shortCodeHistoryRepository;
+            throw new ArgumentNullException(nameof(originalUrl));
         }
-        public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
+
+        var shortUrl = Guid.NewGuid().ToString()[..6];
+
+        if (await _shortyUrlRepository.ExistsByUrlOrShortAsync(originalUrl, shortUrl))
         {
+            throw new ArgumentException("Url is exist");
+        }
 
-            if (string.IsNullOrEmpty(originalUrl))
-            {
-                throw new ArgumentNullException(nameof(originalUrl));
-            }
+        var shorty = new ShortyEntity
+        {
+            CreatedAt = DateTime.UtcNow,
+            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)), //one munit for test
+            ShortCode = shortUrl,
+            Url = originalUrl,
+            UserId = userId,
+        };
+        await _shortyUrlRepository.AddShortyAsync(shorty);
 
-            var shortUrl = Guid.NewGuid().ToString()[..6];
+        var history = new ShortyHistoryEntity
+        {
+            ShortyId = shorty.Id,
+            ChangedAt = DateTime.UtcNow,
+            NewShortUrl = "-",
+            OldShortUrl = shortUrl
+        };
+        await _shortCodeHistoryRepository.AddHistoryAsync(history);
+        return shorty;
+    }
+    public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
+    {
+        var list = await _shortyUrlRepository.GetAllShortyAsync();
+        if (list == null || !list.Any())
+            throw new InvalidOperationException("Short codes list is empty.");
+        return list;
+    }
 
-            if (await _shortyUrlRepository.ExistsByUrlOrShortAsync(originalUrl, shortUrl))
-            {
-                throw new ArgumentException("Url is exist");
-            }
+    public async Task<string> GetOriginalUrlAsync(string shortCode)
+    {
 
-            var shorty = new ShortyEntity
-            {
-                CreatedAt = DateTime.UtcNow,
-                ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)),
-                ShortCode = shortUrl,
-                Url = originalUrl,
-                UserId = userId,
-            };
-            await _shortyUrlRepository.AddShortyAsync(shorty);
+        if (string.IsNullOrWhiteSpace(shortCode))
+            throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
 
-            var history = new ShortyHistoryEntity
-            {
-                ShortyId = shorty.Id,
-                ChangedAt = DateTime.UtcNow,
-                NewShortUrl = "-",
-                OldShortUrl = shortUrl
-            };
+        if (!await _shortyUrlRepository.IsShortCodeValidateAsync(shortCode))
+            throw new InvalidOperationException("ShortCode is not valid or expired.");
+
+        var url = await _shortyUrlRepository.GetOriginalShortUrlAsync(shortCode);
+
+        return url;
+    }
+
+    public async Task UpdateShortCodAsync(int id, string newShortyCode)
+    {
+        var entity = await _shortyUrlRepository.GetByIDAsync(id);
+
+        if (id == 0)
+        {
+            throw new ArgumentNullException($"Id '{nameof(id)}' is empty");
+        }
+        if (string.IsNullOrWhiteSpace(newShortyCode))
+        {
+            throw new ArgumentException("Value cannot be empty.", nameof(newShortyCode));
+        }
+
+        if (!await _shortyUrlRepository.IsShortCodeValidateAsync(entity.ShortCode))
+            throw new InvalidOperationException("ShortCode is not valid or expired.");
+
+        var newShortCode = new ShortyEntity
+        {
+            Id = id,
+            UpdatedAt = DateTime.UtcNow,
+            ShortCode = newShortyCode,
+        };
+
+        if (entity == null)
+        {
+            throw new ArgumentNullException($"{nameof(entity)} is empty");
+        }
+        var shorty = entity.ShortCode;
+
+        var history = new ShortyHistoryEntity
+        {
+            ShortyId = id,
+            ChangedAt = DateTime.UtcNow,
+            NewShortUrl = newShortyCode,
+            OldShortUrl = shorty
+        };
+
+        if (await _shortyUrlRepository.ExistsId(id))
+        {
+            await _shortyUrlRepository.UpdateAsync(newShortCode);
             await _shortCodeHistoryRepository.AddHistoryAsync(history);
-            return shorty;
         }
-        public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
+        else
         {
-            var list = await _shortyUrlRepository.GetAllShortyAsync();
-            if (list == null || !list.Any())
-                throw new InvalidOperationException("Short codes list is empty.");
-            return list;
-        }
-
-        public async Task<string> GetOriginalUrlAsync(string shortCode)
-        {
-
-            if (string.IsNullOrWhiteSpace(shortCode))
-                throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
-
-          var url =  await _shortyUrlRepository.GetOriginalShortUrlAsync(shortCode);
-
-            return url;
-        }
-
-        public async Task UpdateShortCodAsync(int id, string newShortyCode)
-        {
-            if (id == 0) 
-            {
-                throw new ArgumentNullException($"Id '{nameof(id)}' is empty");
-            }
-            if (string.IsNullOrWhiteSpace(newShortyCode))
-            {
-                throw new ArgumentException("Value cannot be empty.", nameof(newShortyCode));
-            }
-
-            var newShortCode = new ShortyEntity
-            {
-                Id = id,
-                UpdatedAt = DateTime.UtcNow,
-               ShortCode = newShortyCode,
-
-            };
-
-            var entity = await _shortyUrlRepository.GetByIDAsync(id);
-            if(entity == null)
-            {
-                throw new ArgumentNullException($"{nameof(entity)} is empty");
-            }
-            var shorty = entity.ShortCode;
-
-            var history = new ShortyHistoryEntity
-            {
-                ShortyId = id,
-                ChangedAt = DateTime.UtcNow,
-                NewShortUrl = newShortyCode,
-                OldShortUrl = shorty
-            };
-
-            if (await _shortyUrlRepository.ExistsId(id))
-            {
-                await _shortyUrlRepository.UpdateAsync(newShortCode);
-                await _shortCodeHistoryRepository.AddHistoryAsync(history);
-            }
-            else
-            {
-                throw new ArgumentNullException($"Id '{nameof(id)}' is not found");
-            }
+            throw new ArgumentNullException($"Id '{nameof(id)}' is not found");
         }
     }
 }

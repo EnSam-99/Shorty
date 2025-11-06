@@ -44,8 +44,7 @@ namespace Shorty.Domain.Services.IServices
                 ChangedAt = DateTime.UtcNow
             };
 
-            await _repository.AddHistoryAsync(history);
-            
+            await _repository.AddHistoryAsync(history);            
         }
         public async Task<IEnumerable<ShortHistoryDto>> GetAllShortsHistoryAsync()
         {

@@ -52,12 +52,11 @@
     @(isBusy ? "Updating..." : "Update your shorty link")
 </button>
 
-
 @code {
     private List<ShortyDto> _shortCodes = new();
     private int? _selectedId;           
     private bool _loading = true;
-    private string inputNewUrl = default;
+    private string inputNewUrl = default!;
     private bool isBusy;
     private string? _msg;
     private bool _isError;
@@ -120,6 +119,4 @@
         }
         finally { isBusy = false; }
     }
-
-   
 }
