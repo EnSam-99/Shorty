@@ -21,6 +21,10 @@ namespace Shorty.Dal.Entities
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public int UserId { get; set; }
         public User? User { get; set; }
+        
+        public bool IsActive { get; set; } = false;
+
+        public decimal Score { get; set; } = 0m;
 
         public ICollection<Visit> Visits { get; set; } = new List<Visit>();
     }
