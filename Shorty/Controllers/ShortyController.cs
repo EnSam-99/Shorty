@@ -7,7 +7,7 @@ namespace Shorty.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ShortyController(IShortyUrlService shortyUrlService, ShortyStatisticsService statisticsService) : ControllerBase
+    public class ShortyController(IShortyUrlService shortyUrlService, IShortyStatisticsService statisticsService) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> CreateShorty([FromBody] ShortyCreateRequestModel model)
@@ -16,7 +16,7 @@ namespace Shorty.Controllers
             return Ok(shorty);
         }
 
-        [HttpGet("/r/{shortCode}")]
+        [HttpGet("/{shortCode}")]
         public async Task<IActionResult> RedirectToOriginal(string shortCode)
         {
             var originalUrl = await shortyUrlService.GetOriginalUrlAsync(shortCode);
@@ -24,7 +24,7 @@ namespace Shorty.Controllers
             if (originalUrl == null)
                 return NotFound("Short URL not found");
 
-            await statisticsService.RecordVisitAsync(shortCode);
+            await statisticsService.AddVisitAsync(shortCode);
 
             return Redirect(originalUrl);
         }

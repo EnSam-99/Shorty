@@ -7,18 +7,18 @@ using Shorty.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHttpClient("ServerAPI", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5211/");
 });
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
 builder.Services.AddScoped<IShortyUrlService, ShortyUrlService>();
-builder.Services.AddScoped<ShortyStatisticsService>();
+builder.Services.AddScoped<IShortyStatisticsService,ShortyStatisticsService>();
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -26,13 +26,10 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
 });
 
-builder.Services.AddSingleton<TestRepository>();
 builder.Services.AddControllers();
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -47,9 +44,6 @@ app.UseRouting();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
-//app.UseSwagger();
-//app.UseSwaggerUI();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

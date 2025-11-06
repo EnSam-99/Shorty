@@ -25,7 +25,7 @@ else
                 <tr>
                     <td>@s.Url</td>
                     <td>@s.Clicks</td>
-                    <td>@(s.LastAccessed.HasValue? s.LastAccessed.Value.ToLocalTime().ToString("g") : "N/A")</td>
+                    <td>@(s.LastAccessedDate.HasValue? s.LastAccessedDate.Value.ToLocalTime().ToString("g") : "N/A")</td>
                 </tr>
             }
         </tbody>

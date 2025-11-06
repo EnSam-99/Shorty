@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Shorty.Common/Shorty.Common.csproj" Id="e174d29f-aaa2-4c6d-8394-5f7719904056" />
   <Project Path="Shorty.Dal/Shorty.Dal.csproj" />
   <Project Path="Shorty.Domain/Shorty.Domain.csproj" />
   <Project Path="Shorty/Shorty.csproj" />

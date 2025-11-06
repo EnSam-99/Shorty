@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal;
+using Shorty.Domain.Abstraction;
 using Shorty.Domain.Models.Response;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,8 @@ using System.Threading.Tasks;
 
 namespace Shorty.Domain.Services
 {
-    public class ShortyStatisticsService
+    public class ShortyStatisticsService(AppDbContext _context) : IShortyStatisticsService
     {
-
-        private readonly AppDbContext _context;
-
-        public ShortyStatisticsService(AppDbContext context)
-        {
-            _context = context;
-        }
         public async Task<IEnumerable<ShortyStatDto>> GetStatisticsAsync()
         {
             var shorties = await _context.Shorties
@@ -27,7 +21,7 @@ namespace Shorty.Domain.Services
             var stats = shorties
                 .Select(s => new
                 {
-                    CleanUrl = NormalizeUrl(s.Url),
+                    CleanUrl = s.Url.Normalize(),
                     Visits = s.Visits
                 })
                 .GroupBy(x => x.CleanUrl)
@@ -35,27 +29,16 @@ namespace Shorty.Domain.Services
                 {
                     Url = g.Key,
                     Clicks = g.Sum(x => x.Visits.Count),
-                    LastAccessed = g.SelectMany(x => x.Visits)
+                    LastAccessedDate = g.SelectMany(x => x.Visits)
                                     .Max(v => (DateTime?)v.CreatedDate)
                 })
-                .OrderByDescending(s => s.LastAccessed)
+                .OrderByDescending(s => s.LastAccessedDate)
                 .ToList();
 
             return stats;
         }
 
-        private static string NormalizeUrl(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url)) return url;
-
-            url = url.ToLower().Trim();
-            url = url.TrimEnd('/');          
-            if (url.StartsWith("www."))
-                url = url.Substring(4);      
-
-            return url;
-        }
-        public async Task RecordVisitAsync(string shortyUrl)
+        public async Task AddVisitAsync(string shortyUrl)
         {
             var shortLink = await _context.Shorties
                 .Include(s => s.Visits)
@@ -67,7 +50,6 @@ namespace Shorty.Domain.Services
                     .OrderByDescending(v => v.CreatedDate)
                     .FirstOrDefault();
 
-                // Ignore duplicate if last visit is within 2 seconds
                 if (lastVisit != null && (DateTime.UtcNow - lastVisit.CreatedDate).TotalSeconds < 2)
                     return;
 

@@ -10,6 +10,6 @@ namespace Shorty.Domain.Models.Response
     {
         public string Url { get; set; }
         public int Clicks { get; set; }
-        public DateTime? LastAccessed { get; set; }
+        public DateTime? LastAccessedDate { get; set; }
     }
 }
