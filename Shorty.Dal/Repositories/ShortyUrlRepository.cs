@@ -78,6 +78,10 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
         return isValid;
     }
 
+    public async Task<bool> IsShortCodeValidateAsyncV2(string shortCode) 
+        => await _context.Shorties
+            .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);
+
     public async Task DeleteIsNotValidShortyByName(string shortyName)
     {
         if(string.IsNullOrWhiteSpace(shortyName))
@@ -87,6 +91,7 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
         {
             throw new InvalidOperationException("Shorties list is empty.");
         }
+
         if (!await IsShortCodeValidateAsync(shortyName))
         {
             await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();
