@@ -12,7 +12,7 @@ public class ShortCodeHistoryController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
         => Ok(await _svc.GetAllShortsHistoryAsync());
 
-    [HttpPost] 
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateHistoryRequest req)
     {
         await _svc.CreateHistoryAsync(req.ShortyId, req.OldShort, req.NewShort);

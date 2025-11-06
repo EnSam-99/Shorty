@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shorty.Dal.Models;
 
 public class ShortyEntity
 {
     [Key]
-    public int Id { get; set; } = default!;  
+    public int Id { get; set; } = default!;
     [Required, MaxLength(2048)]
-    public string Url { get; set; } = default!; 
+    public string Url { get; set; } = default!;
     [Required, MaxLength(64)]
     public string ShortCode { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

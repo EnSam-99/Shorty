@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
-using Shorty.Controllers;
 using Shorty.Dal;
 using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Db.Repositories;
@@ -46,7 +45,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    
+
     app.UseHsts();
 }
 

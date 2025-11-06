@@ -1,10 +1,7 @@
-﻿using Shorty.Dal.Db;
-using Shorty.Dal.Db.IRepositories;
+﻿using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Models;
 using Shorty.Services.IServices;
-using System;
-using System.Collections.Generic;
 
 namespace Shorty.Services;
 

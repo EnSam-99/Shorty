@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal.Db.Repositories;
-using Shorty.Dal.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shorty.Dal.Models;
 using Shorty.Domain.Models;
 using Shorty.Models;
-using Shorty.Services;
 using Shorty.Services.IServices;
 
 namespace Shorty.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ShortyController: ControllerBase
+public class ShortyController : ControllerBase
 {
     private readonly IUrlService<ShortyEntity> _service;
 
@@ -35,7 +31,7 @@ public class ShortyController: ControllerBase
 
     }
     [HttpPatch("update-short")]
-   public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
+    public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
     {
 
         if (shorty is null)
@@ -47,7 +43,7 @@ public class ShortyController: ControllerBase
         if (string.IsNullOrWhiteSpace(shorty.NewShort))
             return BadRequest("NewShort is required.");
         await _service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
-        
+
         return Ok();
     }
 
@@ -64,6 +60,6 @@ public class ShortyController: ControllerBase
         });
         return Ok(dto);
     }
-  
+
 
 }

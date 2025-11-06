@@ -1,14 +1,7 @@
 ﻿using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
-using Shorty.Dal.Models;
 using Shorty.Domain.Models;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shorty.Domain.Services.IServices
 {
@@ -44,7 +37,7 @@ namespace Shorty.Domain.Services.IServices
                 ChangedAt = DateTime.UtcNow
             };
 
-            await _repository.AddHistoryAsync(history);            
+            await _repository.AddHistoryAsync(history);
         }
         public async Task<IEnumerable<ShortHistoryDto>> GetAllShortsHistoryAsync()
         {

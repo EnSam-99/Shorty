@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shorty.Dal.Db.Repositories;
 
@@ -44,7 +39,7 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
     {
         if (string.IsNullOrWhiteSpace(shortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
-       
+
         var url = await _context.Shorties.AsNoTracking().FirstOrDefaultAsync(s => s.ShortCode == shortCode);
         if (url == null)
             throw new KeyNotFoundException($"Url '{shortCode}' not found.");
@@ -62,7 +57,7 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
         if (string.IsNullOrWhiteSpace(shortyModel.ShortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortyModel.ShortCode));
 
-        if(await IsShortCodeValidateAsync(shortyModel.ShortCode) == false)
+        if (await IsShortCodeValidateAsync(shortyModel.ShortCode) == false)
             throw new InvalidOperationException("ShortCode is not valid or expired.");
 
         await _context.Shorties.Where(x => x.Id == shortyModel.Id)
@@ -78,13 +73,13 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
         return isValid;
     }
 
-    public async Task<bool> IsShortCodeValidateAsyncV2(string shortCode) 
+    public async Task<bool> IsShortCodeValidateAsyncV2(string shortCode)
         => await _context.Shorties
             .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);
 
     public async Task DeleteIsNotValidShortyByName(string shortyName)
     {
-        if(string.IsNullOrWhiteSpace(shortyName))
+        if (string.IsNullOrWhiteSpace(shortyName))
             throw new ArgumentException("ShortyName is empty.", nameof(shortyName));
 
         if (!await _context.Shorties.AnyAsync())

@@ -1,14 +1,13 @@
 ﻿using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Models;
-using Shorty.Models;
 using Shorty.Services.IServices;
 
 namespace Shorty.Services;
 
-public class UserService: IUserService<UserEntity>
+public class UserService : IUserService<UserEntity>
 {
     private readonly IUserRepository<UserEntity> _userRepository;
-    public UserService(IUserRepository<UserEntity> userRepository)=>  _userRepository = userRepository;   
+    public UserService(IUserRepository<UserEntity> userRepository) => _userRepository = userRepository;
     public async Task<UserEntity> CreateUserAsync(string userName, string email)
     {
         if (string.IsNullOrEmpty(userName))
@@ -30,7 +29,7 @@ public class UserService: IUserService<UserEntity>
         var user = new UserEntity
         {
             Name = userName,
-            Email = email            
+            Email = email
         };
         await _userRepository.AddUserAsync(user);
         return user;

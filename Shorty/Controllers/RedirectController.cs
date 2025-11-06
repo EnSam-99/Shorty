@@ -7,7 +7,7 @@ namespace Shorty.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RedirectController: ControllerBase
+    public class RedirectController : ControllerBase
     {
         private readonly IUrlService<ShortyEntity> _service;
         private readonly IShortyUrlRepository<ShortyEntity> _urlRepo;
@@ -20,7 +20,7 @@ namespace Shorty.Controllers
         [HttpGet("{code}")]
         public async Task<IActionResult> Get(string code)
         {
-            if(!await _urlRepo.IsShortCodeValidateAsync(code))
+            if (!await _urlRepo.IsShortCodeValidateAsync(code))
             {
                 return BadRequest("ShortCode is not valid or expired.");
             }
@@ -35,7 +35,7 @@ namespace Shorty.Controllers
                     return BadRequest("Invalid target URL.");
             }
 
-            return Redirect(uri.ToString()); 
+            return Redirect(uri.ToString());
         }
 
 
