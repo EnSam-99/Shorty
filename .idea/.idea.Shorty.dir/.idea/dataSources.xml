@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="yelenadb@ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech" uuid="8340f2da-0f88-4745-874f-b799f2f39021">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-patient-morning-agkih675-pooler.c-2.eu-central-1.aws.neon.tech/yelenadb?password=npg_5jmasY6vLIRC&amp;sslmode=Require&amp;user=neondb_owner</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
