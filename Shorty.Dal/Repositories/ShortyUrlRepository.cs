@@ -4,10 +4,8 @@ using Shorty.Dal.Models;
 
 namespace Shorty.Dal.Db.Repositories;
 
-public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
-{
-    readonly AppDbContext _context;
-    public ShortyUrlRepository(AppDbContext context) => _context = context;
+public class ShortyUrlRepository (AppDbContext _context): IShortyUrlRepository<ShortyEntity>
+{    
     public async Task AddShortyAsync(ShortyEntity shortyModel)
     {
         await _context.Shorties.AddAsync(shortyModel);
@@ -57,25 +55,15 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
         if (string.IsNullOrWhiteSpace(shortyModel.ShortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortyModel.ShortCode));
 
-        if (await IsShortCodeValidateAsync(shortyModel.ShortCode) == false)
-            throw new InvalidOperationException("ShortCode is not valid or expired.");
-
+      
         await _context.Shorties.Where(x => x.Id == shortyModel.Id)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShortCode, shortyModel.ShortCode)
         .SetProperty(l => l.UpdatedAt, DateTime.UtcNow));
     }
 
-    public async Task<bool> IsShortCodeValidateAsync(string shortCode)
-    {
-        var timeNow = DateTime.UtcNow;
-        var isValid = await _context.Shorties
-            .AnyAsync(s => s.ShortCode == shortCode && timeNow < s.ExpiredAt);
-        return isValid;
-    }
-
-    public async Task<bool> IsShortCodeValidateAsyncV2(string shortCode)
-        => await _context.Shorties
-            .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);
+    public async Task<bool> IsShortCodeValidAsync(string shortCode)
+    => await _context.Shorties
+            .AnyAsync(s => s.ShortCode == shortCode && DateTime.UtcNow < s.ExpiredAt);   
 
     public async Task DeleteIsNotValidShortyByName(string shortyName)
     {
@@ -83,13 +71,14 @@ public class ShortyUrlRepository : IShortyUrlRepository<ShortyEntity>
             throw new ArgumentException("ShortyName is empty.", nameof(shortyName));
 
         if (!await _context.Shorties.AnyAsync())
-        {
-            throw new InvalidOperationException("Shorties list is empty.");
-        }
+             throw new InvalidOperationException("Shorties list is empty.");        
 
-        if (!await IsShortCodeValidateAsync(shortyName))
-        {
-            await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();
-        }
+        if (!await IsShortCodeValidAsync(shortyName))
+             await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();       
+    }
+
+    public async Task DeleteAllNotValidShorties()
+    {
+
     }
 }

@@ -5,16 +5,8 @@ using Shorty.Services.IServices;
 
 namespace Shorty.Services;
 
-public class UrlService : IUrlService<ShortyEntity>
+public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository) : IUrlService<ShortyEntity>
 {
-    private IShortyUrlRepository<ShortyEntity> _shortyUrlRepository;
-    private IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository;
-
-    public UrlService(IShortyUrlRepository<ShortyEntity> shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> shortCodeHistoryRepository)
-    {
-        _shortyUrlRepository = shortyUrlRepository;
-        _shortCodeHistoryRepository = shortCodeHistoryRepository;
-    }
     public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
     {
 
@@ -33,7 +25,7 @@ public class UrlService : IUrlService<ShortyEntity>
         var shorty = new ShortyEntity
         {
             CreatedAt = DateTime.UtcNow,
-            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)), //one munit for test
+            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromHours(10)), 
             ShortCode = shortUrl,
             Url = originalUrl,
             UserId = userId,
@@ -64,7 +56,7 @@ public class UrlService : IUrlService<ShortyEntity>
         if (string.IsNullOrWhiteSpace(shortCode))
             throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
 
-        if (!await _shortyUrlRepository.IsShortCodeValidateAsync(shortCode))
+        if (!await _shortyUrlRepository.IsShortCodeValidAsync(shortCode))
             throw new InvalidOperationException("ShortCode is not valid or expired.");
 
         var url = await _shortyUrlRepository.GetOriginalShortUrlAsync(shortCode);
@@ -80,12 +72,13 @@ public class UrlService : IUrlService<ShortyEntity>
         {
             throw new ArgumentNullException($"Id '{nameof(id)}' is empty");
         }
+
         if (string.IsNullOrWhiteSpace(newShortyCode))
         {
             throw new ArgumentException("Value cannot be empty.", nameof(newShortyCode));
         }
 
-        if (!await _shortyUrlRepository.IsShortCodeValidateAsync(entity.ShortCode))
+        if (!await _shortyUrlRepository.IsShortCodeValidAsync(entity.ShortCode))
             throw new InvalidOperationException("ShortCode is not valid or expired.");
 
         var newShortCode = new ShortyEntity

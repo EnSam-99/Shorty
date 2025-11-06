@@ -13,16 +13,13 @@ using Shorty.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "shorty", Version = "v1" });
 });
-
 
 builder.Services.AddScoped<IUserRepository<UserEntity>, UserRepository>();
 builder.Services.AddScoped<IUserService<UserEntity>, UserService>();

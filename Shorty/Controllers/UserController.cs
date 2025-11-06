@@ -7,15 +7,8 @@ namespace Shorty.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(IUserService<UserEntity> _userService) : ControllerBase
 {
-    readonly IUserService<UserEntity> _userService;
-
-    public UserController(IUserService<UserEntity> userService)
-    {
-        _userService = userService;
-    }
-
     [HttpPost("create-user")]
     public async Task<IActionResult> AddUserAsync([FromBody] UserDto dto)
     {

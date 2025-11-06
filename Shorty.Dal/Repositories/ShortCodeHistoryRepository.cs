@@ -4,10 +4,8 @@ using Shorty.Dal.Entities;
 
 namespace Shorty.Dal.Db.Repositories;
 
-public class ShortCodeHistoryRepository : IShortCodeHistoryRepository<ShortyHistoryEntity>
+public class ShortCodeHistoryRepository(AppDbContext _context) : IShortCodeHistoryRepository<ShortyHistoryEntity>
 {
-    private readonly AppDbContext _context;
-    public ShortCodeHistoryRepository(AppDbContext context) => _context = context;
     public async Task AddHistoryAsync(ShortyHistoryEntity history)
     {
         await _context.Histories.AddAsync(history);

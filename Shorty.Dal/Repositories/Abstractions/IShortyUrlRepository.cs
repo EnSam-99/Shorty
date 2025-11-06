@@ -11,6 +11,6 @@ public interface IShortyUrlRepository<T>
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
     public Task<bool> ExistsId(int id);
     public Task<string> GetOriginalShortUrlAsync(string shortCode);
-    public Task<bool> IsShortCodeValidateAsync(string shortCode);
+    public Task<bool> IsShortCodeValidAsync(string shortCode);
     public Task DeleteIsNotValidShortyByName(string shortyName);
 }

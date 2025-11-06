@@ -8,15 +8,8 @@ namespace Shorty.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ShortyController : ControllerBase
+public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBase
 {
-    private readonly IUrlService<ShortyEntity> _service;
-
-    public ShortyController(IUrlService<ShortyEntity> service)
-    {
-        _service = service;
-    }
-
     [HttpPost("add-shorty")]
     public async Task<IActionResult> AddShorty([FromBody] CreateShortyRequestDto req)
     {
@@ -28,8 +21,8 @@ public class ShortyController : ControllerBase
             ShortUrl = entity.ShortCode,
             UserId = entity.UserId
         });
-
     }
+
     [HttpPatch("update-short")]
     public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
     {
@@ -40,8 +33,6 @@ public class ShortyController : ControllerBase
         if (shorty.ShortyId == 0)
             return BadRequest("ShortyId is required.");
 
-        if (string.IsNullOrWhiteSpace(shorty.NewShort))
-            return BadRequest("NewShort is required.");
         await _service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
 
         return Ok();
@@ -51,6 +42,7 @@ public class ShortyController : ControllerBase
     public async Task<IActionResult> GetAllShorties()
     {
         var list = await _service.GetAllShortCodesAsync();
+
         var dto = list.Select(x => new ShortyDto
         {
             Id = x.Id,
@@ -58,8 +50,7 @@ public class ShortyController : ControllerBase
             ShortUrl = x.ShortCode,
             UserId = x.UserId
         });
+
         return Ok(dto);
     }
-
-
 }
