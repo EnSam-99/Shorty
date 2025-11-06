@@ -50,7 +50,8 @@ namespace Shorty.Controllers
 			return Ok(dto);
 		}
 		[HttpGet("top")]
-		public async Task<IActionResult> GetTop([FromQuery] int take = 10)
+		public async Task<IActionResult> GetTop(
+			int take = 10)
 		{
 			var list = await _shortyUrlService.GetTopAsync(take);
 			return Ok(list.Select(x => new { short_code = x.ShortCode, clicks = x.Clicks }));

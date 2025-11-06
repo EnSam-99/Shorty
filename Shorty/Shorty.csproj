@@ -7,13 +7,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Shorty.Dal\Shorty.Dal.csproj" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<ProjectReference Include="..\Shorty.Domain\Shorty.Domain.csproj" />
+		<PackageReference Include="Microsoft.OpenApi" Version="2.3.8" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Shorty.Domain\Shorty.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

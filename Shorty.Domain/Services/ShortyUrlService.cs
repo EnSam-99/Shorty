@@ -53,7 +53,7 @@ public class ShortyUrlService : IShortyUrlService
 				ShortyUrl = newShorty.ShortyUrl
 			};
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
@@ -80,7 +80,7 @@ public class ShortyUrlService : IShortyUrlService
 				CreatedDate = s.CreatedDate
 			}).ToList();
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
@@ -102,7 +102,7 @@ public class ShortyUrlService : IShortyUrlService
 				LastAccessed = s.LastAccessed
 			};
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
@@ -115,7 +115,7 @@ public class ShortyUrlService : IShortyUrlService
 						 .FirstOrDefaultAsync(x => x.ShortyUrl == shortCode);
 			return s?.Url;
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
@@ -133,7 +133,7 @@ public class ShortyUrlService : IShortyUrlService
 
 			return s.Url;
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
@@ -150,7 +150,7 @@ public class ShortyUrlService : IShortyUrlService
 				.Select(x => new ValueTuple<string, int>(x.ShortyUrl, x.Clicks))
 				.ToListAsync();
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			throw;
 		}
