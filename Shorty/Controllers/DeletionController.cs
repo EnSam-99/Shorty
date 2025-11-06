@@ -6,21 +6,18 @@ namespace Shorty.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DeletionController :ControllerBase
+public class DeletionController(IDeletionUrlService deletionUrlService) : ControllerBase
 {
-    private readonly IDeletionUrlService _deletionUrlService;
-
-    public DeletionController(IDeletionUrlService deletionController)
-    {
-        _deletionUrlService = deletionController;
-    }
-
-    [HttpDelete("{id:int}")]
+    private readonly IDeletionUrlService _deletionUrlService = deletionUrlService;
+    
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteById(int id)
     {
         var res = await _deletionUrlService.DeleteByIdAsync(id);
-        if(!res)
-        {return NotFound($"URL with ID {id} not found.");}
+        if (!res)
+        {
+            return NotFound($"URL with ID {id} not found.");
+        }
 
         return Ok("URL deleted successfully.");
     }
@@ -36,7 +33,7 @@ public class DeletionController :ControllerBase
         return Ok($"All URLs for {email} deleted successfully.");
     }
     
-    [HttpPatch("deactivate/{id:int}")]
+    [HttpPatch("deactivate/{id}")]
     public async Task<IActionResult> DeactivateById(int id)
     {
         var result = await _deletionUrlService.DeactivateByIdAsync(id);
@@ -45,4 +42,5 @@ public class DeletionController :ControllerBase
 
         return Ok("URL deactivated successfully.");
     }
+    
 }

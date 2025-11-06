@@ -10,33 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de645e35-3c1c-4c7a-b6fd-6928a9c0b12c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Shorty/Controllers/DeletionController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Shorty.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Shorty.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/AppDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Entities/Shorty.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Entities/ShortyLink.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Entities/ShortyLink.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Entities/ShortyLink.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Shorty.Dal/Entities/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Entities/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251023163329_InitialCreate.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251023163329_InitialCreate.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251027111649_InitialCreate.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/20251027111649_InitialCreate.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/ShortLink.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Shorty.Dal.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Shorty.Dal.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Dal/User.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IShortyUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IShortyUrlService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/DTOs/CreateRequestModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Models/Request/ShortyCreateRequestModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Models/Response/ShortyCreateDto.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Services/ShortyUrlService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Repository/Implementation/DeletionRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Repository/Implementation/DeletionRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Dal/Repository/Interface/IDeletionRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Dal/Repository/Interface/IDeletionRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IDeletionUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Abstraction/IDeletionUrlService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty.Domain/Services/DeletionUrlService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty.Domain/Services/DeletionUrlService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Layout/MainLayout.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Shorty/Components/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Layout/NavMenu.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Error.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Pages/Error.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Home.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/Shorty.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Pages/Shorty.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Controllers/ShortyController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Controllers/ShortyController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/Shorty.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Shorty.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shorty/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Components/Pages/ShortyDeletion.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Components/Pages/ShortyDeletion.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shorty/Controllers/DeletionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Shorty/Controllers/DeletionController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +43,16 @@
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/EnSam-99/Shorty.git&quot;,
     &quot;accountId&quot;: &quot;519e28be-8f7e-4736-a255-9d66426271fc&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;EnSam-99&quot;,
+    &quot;repository&quot;: &quot;Shorty&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
@@ -188,7 +182,9 @@
       <workItem from="1762174012003" duration="9175000" />
       <workItem from="1762191580518" duration="1037000" />
       <workItem from="1762203553538" duration="2961000" />
-      <workItem from="1762252783452" duration="6432000" />
+      <workItem from="1762252783452" duration="9382000" />
+      <workItem from="1762419196926" duration="5990000" />
+      <workItem from="1762442190796" duration="485000" />
     </task>
     <task id="LOCAL-00001" summary="skeleton">
       <option name="closed" value="true" />
@@ -198,7 +194,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761747198833</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added deletion API.">
+      <option name="closed" value="true" />
+      <created>1762287789820</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762287789820</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,6 +237,7 @@
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="skeleton" />
-    <option name="LAST_COMMIT_MESSAGE" value="skeleton" />
+    <MESSAGE value="Added deletion API." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added deletion API." />
   </component>
 </project>

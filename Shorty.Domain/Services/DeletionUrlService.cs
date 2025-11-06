@@ -22,9 +22,8 @@ public class DeletionUrlService : IDeletionUrlService
         if (url == null) return false;
         url.IsActive = false;
         url.DeletedAt = DateTime.Now;
-        
-        _context.Shorties.Remove(url);
-        await _context.SaveChangesAsync();
+
+        await _repository.DeleteAsync(url);
         return true;
     }
     public async Task<bool> DeleteByEmailAsync(string email)
@@ -38,8 +37,7 @@ public class DeletionUrlService : IDeletionUrlService
             url.DeletedAt = DateTime.Now;
         }
 
-        _context.Shorties.RemoveRange(urls);  
-        await _context.SaveChangesAsync();
+        await _repository.DeleteRangeAsync(urls);
         return true;
     }
 
@@ -52,11 +50,4 @@ public class DeletionUrlService : IDeletionUrlService
         return true;
     }
     
-    public async Task<List<ShortyLink>> GetAllAsync()
-    {
-        return await _context.Shorties
-            .Include(s => s.User)
-            .OrderBy(s => s.Id)
-            .ToListAsync();
-    }
 }

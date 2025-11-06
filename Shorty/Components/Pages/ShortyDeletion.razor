@@ -1,127 +1,382 @@
-@page "/shorty-deletion"
-@inject HttpClient Http
-@inject IJSRuntime JS
+@page "/delete-url"
+@rendermode InteractiveServer
+@using global::Shorty.Domain.Abstraction
+@using global::Shorty.Dal.Entities
+@using global::Shorty.Dal.Repository.Interface
+@inject IDeletionUrlService DeletionService
 
-<h3>Delete Shorty – No API Changes</h3>
+<PageTitle>URL Management</PageTitle>
 
-<div class="row g-3 mb-3">
-    <div class="col-md-4">
-        <label>ID:</label>
-        <input @bind="inputId" type="number" class="form-control" placeholder="Enter ID" />
+<h1>URL Management</h1>
+<h3>View and Manage Short URLs</h3>
+
+<div class="container mt-4">
+    <!-- Search by Email Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Search URLs by Email</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="searchEmail" class="form-label">Email Address</label>
+                                <input @bind="searchEmail" @bind:event="oninput" type="email" class="form-control" id="searchEmail" placeholder="Enter user email to search" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button @onclick="SearchByEmail" class="btn btn-primary w-100" disabled="@string.IsNullOrWhiteSpace(searchEmail)">
+                                <span class="oi oi-magnifying-glass"></span> Search URLs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <label>Email:</label>
-        <input @bind="inputEmail" class="form-control" placeholder="Enter email" />
+
+    <!-- URLs Table -->
+    @if (userUrls != null && userUrls.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">URLs for: @searchEmail</h5>
+                        <span class="badge bg-light text-dark">Total: @userUrls.Count</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Original URL</th>
+                                        <th>Short URL</th>
+                                        <th>Created Date</th>
+                                        <th>Status</th>
+                                        <th>Visits</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var url in userUrls)
+                                    {
+                                        <tr class="@(url.IsActive ? "" : "table-secondary")">
+                                            <td>
+                                                <strong>@url.Id</strong>
+                                            </td>
+                                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@url.Url">
+                                                @url.Url
+                                            </td>
+                                            <td>
+                                                <code>@url.ShortUrl</code>
+                                            </td>
+                                            <td>
+                                                @url.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                                            </td>
+                                            <td>
+                                                @if (url.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">@(url.Visits?.Count ?? 0)</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    @if (url.IsActive)
+                                                    {
+                                                        <button @onclick="() => DeactivateSingle(url.Id)" class="btn btn-warning" title="Deactivate">
+                                                            <span class="oi oi-circle-x"></span>
+                                                        </button>
+                                                    }
+                                                    <button @onclick="() => DeleteSingle(url.Id)" class="btn btn-danger" title="Delete">
+                                                        <span class="oi oi-trash"></span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (hasSearched)
+    {
+        <div class="alert alert-warning mt-3">
+            <span class="oi oi-warning"></span> No URLs found for email: @searchEmail
+        </div>
+    }
+
+    <!-- Quick Actions Section -->
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Quick Actions by ID</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="deleteId" class="form-label">URL ID</label>
+                        <input @bind="deleteId" @bind:event="oninput" type="number" class="form-control" id="deleteId" placeholder="Enter URL ID" />
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button @onclick="DeleteById" class="btn btn-danger" disabled="@(deleteId <= 0)">
+                            <span class="oi oi-trash"></span> Delete Permanently
+                        </button>
+                        <button @onclick="DeactivateById" class="btn btn-warning" disabled="@(deleteId <= 0)">
+                            <span class="oi oi-circle-x"></span> Deactivate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Bulk Actions by Email</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="deleteEmail" class="form-label">Email Address</label>
+                        <input @bind="bulkEmail" @bind:event="oninput" type="email" class="form-control" id="deleteEmail" placeholder="Enter user email" />
+                    </div>
+                    <button @onclick="DeleteByEmail" class="btn btn-danger w-100" disabled="@string.IsNullOrWhiteSpace(bulkEmail)">
+                        <span class="oi oi-trash"></span> Delete All URLs for this Email
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4 d-flex align-items-end">
-        <button class="btn btn-primary w-100" @onclick="LoadLinks">Show Links</button>
-    </div>
+
+    <!-- Operation Results -->
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @alertClass alert-dismissible fade show mt-3" role="alert">
+            @message
+            <button type="button" class="btn-close" @onclick="ClearMessage"></button>
+        </div>
+    }
+
+    <!-- Loading Indicator -->
+    @if (isLoading)
+    {
+        <div class="text-center mt-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Processing...</span>
+            </div>
+            <p class="mt-2">Processing your request...</p>
+        </div>
+    }
 </div>
 
-@if (links != null && links.Any())
-{
-    <div class="alert alert-info">
-        Found @links.Count link(s) – click Delete to remove from database
-    </div>
-
-    <table class="table table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Short URL</th>
-                <th>Email</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var link in links)
-            {
-                <tr>
-                    <td><strong>@link.Id</strong></td>
-                    <td><a href="@link.ShortyUrl" target="_blank">@link.ShortyUrl</a></td>
-                    <td>@(link.UserEmail)</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" 
-                                @onclick="() => DeleteSingle(link.Id)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else if (links != null)
-{
-    <p class="text-muted">No links found with this ID or Email.</p>
-}
-
-<p>@message</p>
-
 @code {
-    private int? inputId;
-    private string inputEmail = "";
-    private List<ShortyLink> links = new();
-    private string message = "";
+    private int deleteId;
+    private string searchEmail = string.Empty;
+    private string bulkEmail = string.Empty;
+    private string message = string.Empty;
+    private string alertClass = "alert-info";
+    private bool isLoading = false;
+    private bool hasSearched = false;
+    private List<ShortyLink> userUrls = new List<ShortyLink>();
 
-    private async Task LoadLinks()
+    [Inject]
+    private IDeletionRepository DeletionRepository { get; set; }
+
+    protected override void OnInitialized()
     {
-        message = "";
-        links.Clear();
+        // Կարող եք ավելացնել որևէ նախնական լոգիկա
+    }
 
-        try
+    private async Task SearchByEmail()
+    {
+        if (string.IsNullOrWhiteSpace(searchEmail))
         {
-            // 1. Բերում ենք բոլոր URL-ները
-            var allLinks = await Http.GetFromJsonAsync<List<ShortyLink>>("api/shorty");
+            ShowMessage("Please enter an email address to search", "alert-warning");
+            return;
+        }
 
-            if (allLinks == null)
+        await ExecuteOperation(async () =>
+        {
+            userUrls = await DeletionRepository.GetByEmailAsync(searchEmail);
+            hasSearched = true;
+            
+            if (userUrls.Any())
             {
-                message = "Failed to load data";
-                return;
+                ShowMessage($"Found {userUrls.Count} URLs for email: {searchEmail}", "alert-success");
             }
+            else
+            {
+                ShowMessage($"No URLs found for email: {searchEmail}", "alert-warning");
+            }
+        });
+    }
 
-            // 2. Ֆիլտրում ենք Blazor-ում (ոչ API-ում!)
-            links = allLinks
-                .Where(l => 
-                    (!inputId.HasValue || l.Id == inputId.Value) &&
-                    (string.IsNullOrEmpty(inputEmail) || l.UserEmail == inputEmail))
-                .ToList();
-
-            message = links.Any() 
-                ? $"Found {links.Count} link(s)"
-                : "No links match your filter";
-        }
-        catch (Exception ex)
+    private async Task DeleteById()
+    {
+        if (deleteId <= 0)
         {
-            message = "Error: " + ex.Message;
+            ShowMessage("Please enter a valid ID", "alert-warning");
+            return;
         }
+
+        await ExecuteOperation(async () =>
+        {
+            var result = await DeletionService.DeleteByIdAsync(deleteId);
+            if (result)
+            {
+                ShowMessage($"✅ URL with ID {deleteId} has been successfully deleted", "alert-success");
+                await RefreshTable();
+                ClearInputs();
+            }
+            else
+            {
+                ShowMessage($"❌ URL with ID {deleteId} was not found", "alert-warning");
+            }
+        });
+    }
+
+    private async Task DeactivateById()
+    {
+        if (deleteId <= 0)
+        {
+            ShowMessage("Please enter a valid ID", "alert-warning");
+            return;
+        }
+
+        await ExecuteOperation(async () =>
+        {
+            var result = await DeletionService.DeactivateByIdAsync(deleteId);
+            if (result)
+            {
+                ShowMessage($"✅ URL with ID {deleteId} has been successfully deactivated", "alert-success");
+                await RefreshTable();
+                ClearInputs();
+            }
+            else
+            {
+                ShowMessage($"❌ URL with ID {deleteId} was not found or already deactivated", "alert-warning");
+            }
+        });
+    }
+
+    private async Task DeleteByEmail()
+    {
+        if (string.IsNullOrWhiteSpace(bulkEmail))
+        {
+            ShowMessage("Please enter an email address", "alert-warning");
+            return;
+        }
+
+        await ExecuteOperation(async () =>
+        {
+            var result = await DeletionService.DeleteByEmailAsync(bulkEmail);
+            if (result)
+            {
+                ShowMessage($"✅ All URLs for email {bulkEmail} have been successfully deleted", "alert-success");
+                await RefreshTable();
+                ClearInputs();
+            }
+            else
+            {
+                ShowMessage($"❌ No URLs found for email {bulkEmail}", "alert-warning");
+            }
+        });
     }
 
     private async Task DeleteSingle(int id)
     {
-        var confirm = await JS.InvokeAsync<bool>("confirm", 
-            $"Delete ID {id}? This will remove it from the database!");
-
-        if (!confirm) return;
-
-        var response = await Http.DeleteAsync($"api/shorty/{id}");
-
-        if (response.IsSuccessStatusCode)
+        await ExecuteOperation(async () =>
         {
-            message = $"ID {id} deleted!";
-            await LoadLinks(); // ← live update
-        }
-        else
+            var result = await DeletionService.DeleteByIdAsync(id);
+            if (result)
+            {
+                ShowMessage($"✅ URL with ID {id} has been successfully deleted", "alert-success");
+                await RefreshTable();
+            }
+            else
+            {
+                ShowMessage($"❌ URL with ID {id} was not found", "alert-warning");
+            }
+        });
+    }
+
+    private async Task DeactivateSingle(int id)
+    {
+        await ExecuteOperation(async () =>
         {
-            message = $"Failed to delete ID {id}";
+            var result = await DeletionService.DeactivateByIdAsync(id);
+            if (result)
+            {
+                ShowMessage($"✅ URL with ID {id} has been successfully deactivated", "alert-success");
+                await RefreshTable();
+            }
+            else
+            {
+                ShowMessage($"❌ URL with ID {id} was not found or already deactivated", "alert-warning");
+            }
+        });
+    }
+
+    private async Task RefreshTable()
+    {
+        if (!string.IsNullOrWhiteSpace(searchEmail))
+        {
+            userUrls = await DeletionRepository.GetByEmailAsync(searchEmail);
+            StateHasChanged();
         }
     }
 
-    // ← Նույն model-ը, ինչ API-ն վերադարձնում է
-    public class ShortyLink
+    private async Task ExecuteOperation(Func<Task> operation)
     {
-        public int Id { get; set; }
-        public string ShortyUrl { get; set; } = "";
-        public string UserEmail { get; set; } = "";
+        isLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            await operation();
+        }
+        catch (Exception ex)
+        {
+            ShowMessage($"💥 Error: {ex.Message}", "alert-danger");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ShowMessage(string msg, string alertType)
+    {
+        message = msg;
+        alertClass = alertType;
+        StateHasChanged();
+    }
+
+    private void ClearMessage()
+    {
+        message = string.Empty;
+        StateHasChanged();
+    }
+
+    private void ClearInputs()
+    {
+        deleteId = 0;
+        bulkEmail = string.Empty;
+        StateHasChanged();
     }
 }
