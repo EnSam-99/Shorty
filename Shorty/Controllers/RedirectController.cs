@@ -9,7 +9,7 @@ namespace Shorty.Controllers;
 [Route("api/[controller]")]
 public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRepository<ShortyEntity> _urlRepo, IVisitService visitService) : ControllerBase
 {
-    [HttpGet("{code}")]
+    [HttpGet("/s/{code}")]
     public async Task<IActionResult> Get(string code)
     {
         if (!await _urlRepo.IsShortCodeValidAsync(code))

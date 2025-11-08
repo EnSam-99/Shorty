@@ -26,6 +26,8 @@ builder.Services.AddScoped<IShortyUrlRepository<ShortyEntity>, ShortyUrlReposito
 builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
 builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
+builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>

@@ -22,61 +22,7 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Shorty.Dal.Entities.ShortyHistoryEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ChangedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NewShortUrl")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("OldShortUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<int>("ShortyId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShortyId");
-
-                    b.ToTable("Histories");
-                });
-
-            modelBuilder.Entity("Shorty.Dal.Entities.VisitedEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ShortLinkId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ShortyId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("VisitDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShortyId");
-
-                    b.ToTable("Visits");
-                });
-
-            modelBuilder.Entity("Shorty.Dal.Models.ShortyEntity", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,6 +34,9 @@ namespace Shorty.Dal.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ExpiredAt")
@@ -122,7 +71,37 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Shorties");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.UserEntity", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyHistoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NewShortUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("OldShortUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("ShortyId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShortyId");
+
+                    b.ToTable("Histories");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,31 +122,30 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.ShortyHistoryEntity", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.VisitEntity", b =>
                 {
-                    b.HasOne("Shorty.Dal.Models.ShortyEntity", "Shorty")
-                        .WithMany()
-                        .HasForeignKey("ShortyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.Navigation("Shorty");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ShortyId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShortyId");
+
+                    b.ToTable("Visits");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.VisitedEntity", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
-                    b.HasOne("Shorty.Dal.Models.ShortyEntity", "Shorty")
-                        .WithMany()
-                        .HasForeignKey("ShortyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shorty");
-                });
-
-            modelBuilder.Entity("Shorty.Dal.Models.ShortyEntity", b =>
-                {
-                    b.HasOne("Shorty.Dal.Models.UserEntity", "User")
+                    b.HasOne("Shorty.Dal.Entities.UserEntity", "User")
                         .WithMany("Shorties")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -176,7 +154,34 @@ namespace Shorty.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Models.UserEntity", b =>
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyHistoryEntity", b =>
+                {
+                    b.HasOne("Shorty.Dal.Entities.ShortyEntity", "Shorty")
+                        .WithMany()
+                        .HasForeignKey("ShortyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shorty");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.VisitEntity", b =>
+                {
+                    b.HasOne("Shorty.Dal.Entities.ShortyEntity", "Shorty")
+                        .WithMany("Visits")
+                        .HasForeignKey("ShortyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shorty");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
+                {
+                    b.Navigation("Visits");
+                });
+
+            modelBuilder.Entity("Shorty.Dal.Entities.UserEntity", b =>
                 {
                     b.Navigation("Shorties");
                 });
