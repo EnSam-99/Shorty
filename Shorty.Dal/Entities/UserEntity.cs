@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Shorty.Dal.Models;
+namespace Shorty.Dal.Entities;
 
 public class UserEntity
 {
-    public int Id { get; set; } = default!;
+    public int Id { get; set; }
     [Required]
-    public string Name { get; set; } = default!;
+    public string Name { get; set; }
     [Required]
-    public string Email { get; set; } = default!;
-    public DateTime CreatedAt { get; } = DateTime.UtcNow;
-    public List<ShortyEntity> Shorties { get; set; } = new();
+    public string Email { get; set; }
+    public DateTime CreatedAt { get; }
+    public List<ShortyEntity> Shorties { get; set; }
 }

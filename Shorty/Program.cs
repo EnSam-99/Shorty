@@ -6,10 +6,9 @@ using Shorty.Dal;
 using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
-using Shorty.Dal.Models;
-using Shorty.Domain.Services.IServices;
+using Shorty.Domain.Services;
+using Shorty.Domain.Services.Abstractions;
 using Shorty.Services;
-using Shorty.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

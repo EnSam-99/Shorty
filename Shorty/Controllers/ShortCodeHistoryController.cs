@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Domain.Services.IServices;
+using Shorty.Domain.Services.Abstractions;
 
 [ApiController]
 [Route("api/[controller]")]

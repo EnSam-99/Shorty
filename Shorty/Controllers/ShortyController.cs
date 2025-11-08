@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal.Models;
+using Shorty.Dal.Entities;
 using Shorty.Domain.Models;
+using Shorty.Domain.Services.Abstractions;
 using Shorty.Models;
-using Shorty.Services.IServices;
 
 namespace Shorty.Controllers;
 

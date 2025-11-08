@@ -1,6 +1,6 @@
 ﻿using Shorty.Domain.Models;
 
-namespace Shorty.Domain.Services.IServices;
+namespace Shorty.Domain.Services.Abstractions;
 
 public interface IShortCodeHistoryService
 {

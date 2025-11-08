@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal.Entities;
-using Shorty.Dal.Models;
 
 namespace Shorty.Dal;
 
@@ -11,10 +10,11 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<UserEntity> Users { get; set; } = null!;
-    public DbSet<ShortyEntity> Shorties { get; set; } = null!;
-    public DbSet<ShortyHistoryEntity> Histories { get; set; } = null!;
-    public DbSet<VisitedEntity> Visits { get; set; } = null!;
+    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<ShortyEntity> Shorties { get; set; }
+    public DbSet<ShortyHistoryEntity> Histories { get; set; }
+    public DbSet<VisitEntity> Visits { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

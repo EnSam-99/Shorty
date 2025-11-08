@@ -1,4 +1,4 @@
-﻿using Shorty.Dal.Models;
+﻿using Shorty.Dal.Entities;
 
 namespace Shorty.Dal.Db.IRepositories;
 

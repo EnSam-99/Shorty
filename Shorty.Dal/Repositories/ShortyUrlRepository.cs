@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Models;
+using Shorty.Dal.Entities;
 
 namespace Shorty.Dal.Db.Repositories;
 

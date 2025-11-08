@@ -1,9 +1,10 @@
 ﻿using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
 using Shorty.Domain.Models;
+using Shorty.Domain.Services.Abstractions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Shorty.Domain.Services.IServices
+namespace Shorty.Domain.Services
 {
     public class ShortCodeHistoryService : IShortCodeHistoryService
     {

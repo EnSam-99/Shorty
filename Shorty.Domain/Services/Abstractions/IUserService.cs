@@ -1,4 +1,4 @@
-﻿namespace Shorty.Services.IServices;
+﻿namespace Shorty.Domain.Services.Abstractions;
 
 public interface IUserService<T>
 {

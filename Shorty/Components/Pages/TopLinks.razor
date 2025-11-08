@@ -1,0 +1,73 @@
+﻿@page "/top-links"
+@using Shorty.Domain.Models.Response
+@rendermode InteractiveServer
+@inject HttpClient Http
+
+<h3>Top Clicked Short Links</h3>
+
+<div class="mb-3">
+    <label class="form-label">Enter Your Email</label>
+    <input @bind="email" class="form-control" placeholder="example@mail.com" />
+</div>
+
+<button class="btn btn-primary" @onclick="LoadLinks">Show Analytics</button>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger mt-3">@error</div>
+}
+
+@if (links is not null && links.Count > 0)
+{
+    <table class="table table-striped table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Short Link</th>
+                <th>Original URL</th>
+                <th>Clicks</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var l in links)
+            {
+                <tr>
+                    <td>
+                        <a href="/@l.ShortUrl" target="_blank">@l.ShortUrl</a>
+                    </td>
+                    <td>
+                        <a href="@l.OriginalUrl" target="_blank">@l.OriginalUrl</a>
+                    </td>
+                    <td>@l.Clicks</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string email = "";
+    private string? error;
+    private List<TopShortLinkDto>? links;
+
+    private async Task LoadLinks()
+    {
+        error = null;
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            error = "Please enter an email.";
+            return;
+        }
+
+        try
+        {
+            links = await Http.GetFromJsonAsync<List<TopShortLinkDto>>
+                ($"http://localhost:5211/api/analytics/top/{email}");
+        }
+        catch
+        {
+            links = null;
+            error = "No records found or API error.";
+        }
+    }
+}

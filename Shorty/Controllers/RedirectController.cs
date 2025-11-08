@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Models;
-using Shorty.Services.IServices;
+using Shorty.Dal.Entities;
+using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRepository<ShortyEntity> _urlRepo) : ControllerBase
+public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRepository<ShortyEntity> _urlRepo, IVisitService visitService) : ControllerBase
 {
     [HttpGet("{code}")]
     public async Task<IActionResult> Get(string code)
@@ -19,13 +19,18 @@ public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRe
         var target = await _service.GetOriginalUrlAsync(code);
 
         if (string.IsNullOrWhiteSpace(target))
+        {
             return NotFound();
+        }
+
         if (!Uri.TryCreate(target, UriKind.Absolute, out var uri))
         {
             var guess = "https://" + target.Trim();
             if (!Uri.TryCreate(guess, UriKind.Absolute, out uri))
                 return BadRequest("Invalid target URL.");
         }
+
+        await visitService.AddVisitAsync(code);
 
         return Redirect(uri.ToString());
     }
