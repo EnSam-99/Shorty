@@ -9,6 +9,8 @@ namespace Shorty.Domain.Abstraction
 {
     public interface IAnalyticsService
     {
-        Task<List<TopShortLinkDto>> GetTopShortLinksAsync(string email);
-    }
+        Task<List<TopShortLinkDto>> GetTopShortLinkAsync(string email);
+        Task<List<TopShortLinkDto>> GetTopShortLinksAsync();
+        Task RecalculateScoresAsync();
+	}
 }

@@ -5,17 +5,19 @@
 
 <h3>Create Shorty</h3>
 
-<div>
-    <label>Email:</label>
-    <input @bind="email" placeholder="Enter email" />
-</div>
+<div class="row">
+    <div class="mb-2">
+        <label>Email:</label>
+        <input @bind="email" placeholder="Enter email" />
+    </div>
 
-<div>
-    <label>URL:</label>
-    <input @bind="url" placeholder="Enter URL" />
-</div>
+    <div class="mb-2">
+        <label>URL:</label>
+        <input class="ms-2" @bind="url" placeholder="Enter URL" />
+    </div>
 
-<button @onclick="CreateShortyAsync">Create Short URL</button>
+    <button @onclick="CreateShortyAsync" class="col-md-2 ms-3">Create Short URL</button>
+</div>
 
 <p>@resultMessage</p>
 

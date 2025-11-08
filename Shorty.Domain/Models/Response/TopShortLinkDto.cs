@@ -11,5 +11,6 @@ namespace Shorty.Domain.Models.Response
         public string ShortUrl { get; set; } = "";
         public string OriginalUrl { get; set; } = "";
         public long Clicks { get; set; }
-    }
+		public decimal Score { get; set; }
+	}
 }
