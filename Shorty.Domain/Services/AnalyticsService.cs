@@ -54,51 +54,17 @@ namespace Shorty.Domain.Services
 
 		public async Task RecalculateScoresAsync()
 		{
-			var shortLinks = await dbContext.Shorties.Include(s => s.Visits).ToListAsync();
+			List<ShortLink> shortLinks = await dbContext.Shorties.Include(s => s.Visits).ToListAsync();
 
 			foreach (var shortLink in shortLinks)
 			{
+				decimal totalDays = (decimal)(DateTime.UtcNow - shortLink.CreatedDate).TotalDays;
 
-				shortLink.Score = shortLink.IsActive ? shortLink.Visits.Count / (decimal)((DateTime.UtcNow - shortLink.CreatedDate).TotalDays + 1) + 10 : 0;
-				
+				shortLink.Score = shortLink.Visits.Count / (totalDays != 0 ? totalDays : 1)
+					+ (shortLink.IsActive ? 10 : 0);
 			}
 
 			await dbContext.SaveChangesAsync();
 		}
-
-		//public async Task RecalculateScoresAsync()
-		//{
-		//	const int batchSize = 2;
-
-		//	var shortyIds = await dbContext.Shorties
-		//		.OrderBy(s => s.Id)
-		//		.Select(s => s.Id)
-		//		.ToListAsync();
-
-		//	await Parallel.ForEachAsync(
-		//		shortyIds.Chunk(batchSize),
-		//		new ParallelOptions { MaxDegreeOfParallelism = 4 },
-		//		async (idBatch, token) =>
-		//		{
-		//			using var scope = serviceProvider.CreateScope();
-		//			var scopedDb = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-		//			var shorties = await scopedDb.Shorties
-		//				.Include(s => s.Visits)
-		//				.Where(s => idBatch.Contains(s.Id))
-		//				.ToListAsync(token);
-
-		//			foreach (var s in shorties)
-		//			{
-		//				var ageInDays = (DateTime.UtcNow - s.CreatedDate).TotalDays + 1;
-		//				s.Score = s.IsActive
-		//					? s.Visits.Count / (decimal)ageInDays + 10
-		//					: 0;
-		//			}
-
-		//			await scopedDb.SaveChangesAsync(token);
-		//		});
-		//}
-
 	}
 }
