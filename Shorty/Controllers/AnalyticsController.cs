@@ -10,7 +10,7 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     [HttpGet("top/{email}")]
     public async Task<IActionResult> GetTopLinks(string email)
     {
-        var links = await analyticsService.GetTopShortLinksAsync(email);
+        var links = await analyticsService.GetTopPerformingAsync();
 
         if (links == null || links.Count == 0)
         {

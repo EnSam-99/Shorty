@@ -2,5 +2,5 @@
 
 public interface IVisitService
 {
-    Task AddVisitAsync(string shortyUrl);
+   public Task AddVisitAsync(string shortyUrl);
 }

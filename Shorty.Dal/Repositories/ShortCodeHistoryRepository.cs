@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
+using System.Xml.Linq;
 
-namespace Shorty.Dal.Db.Repositories;
+namespace Shorty.Dal.Repositories.Abstractions;
+
 
 public class ShortCodeHistoryRepository(AppDbContext _context) : IShortCodeHistoryRepository<ShortyHistoryEntity>
 {

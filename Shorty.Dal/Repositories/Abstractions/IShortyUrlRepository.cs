@@ -1,6 +1,7 @@
 ﻿using Shorty.Dal.Entities;
 
-namespace Shorty.Dal.Db.IRepositories;
+namespace Shorty.Dal.Repositories.Abstractions;
+
 
 public interface IShortyUrlRepository<T>
 {
@@ -11,6 +12,10 @@ public interface IShortyUrlRepository<T>
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
     public Task<bool> ExistsId(int id);
     public Task<string> GetOriginalShortUrlAsync(string shortCode);
+    public Task<ShortyEntity> GetByShortCodeAsync(string shortCode);
     public Task<bool> IsShortCodeValidAsync(string shortCode);
     public Task DeleteIsNotValidShortyByName(string shortyName);
+    public Task<bool> DeleteByIdAsync(int id);
+    public Task<bool> DeleteByEmailAsync(string email);
+    public Task<bool> DeactivateByIdAsync(string name);
 }

@@ -1,32 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal;
+using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Models.Response;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Domain.Services;
 
-public class AnalyticsService : IAnalyticsService
+public class AnalyticsService (IAnalyticsRepository _repo) : IAnalyticsService
 {
-    private readonly AppDbContext dbContext;
-
-    public AnalyticsService(AppDbContext dbContext)
+    public Task<List<ShortyEntity>> GetTopPerformingAsync()
     {
-        this.dbContext = dbContext;
+        var result = _repo.GetTopPerformingAsync();
+        if(result is null)
+        {
+            throw new InvalidOperationException("No data found for top performing short URLs.");
+        }
+        return result;
     }
 
-    public async Task<List<TopShortLinkDto>> GetTopShortLinksAsync(string email)
+    public async Task RecalculateScoresAsinc()
     {
-        return await dbContext.Shorties
-            .Where(s => s.User.Email == email)
-            .Select(s => new TopShortLinkDto
-            {
-                ShortUrl = s.ShortCode,
-                OriginalUrl = s.Url,
-                Clicks = s.Visits.Count(),
-                LastAccessedDate = s.Visits.Max(v => v.CreatedDate)
-            })
-            .OrderByDescending(s => s.Clicks)
-            .Take(10)
-            .ToListAsync();
+        await _repo.RecalculateScores();
     }
 }

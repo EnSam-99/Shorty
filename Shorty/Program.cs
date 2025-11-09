@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal;
-using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
 using Shorty.Services;
@@ -22,11 +22,13 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IUserRepository<UserEntity>, UserRepository>();
 builder.Services.AddScoped<IUserService<UserEntity>, UserService>();
-builder.Services.AddScoped<IShortyUrlRepository<ShortyEntity>, ShortyUrlRepository>();
+builder.Services.AddScoped<ShortyUrlRepository>();
 builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
 builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IVisitRepository, VisitRepository>();
+builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.Services.AddControllers();

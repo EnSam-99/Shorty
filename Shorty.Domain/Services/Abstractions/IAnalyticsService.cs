@@ -1,8 +1,10 @@
-﻿using Shorty.Domain.Models.Response;
+﻿using Shorty.Dal.Entities;
+using Shorty.Domain.Models.Response;
 
 namespace Shorty.Domain.Services.Abstractions;
 
 public interface IAnalyticsService
 {
-    Task<List<TopShortLinkDto>> GetTopShortLinksAsync(string email);
+    public Task RecalculateScoresAsinc();
+    public Task<List<ShortyEntity>> GetTopPerformingAsync();
 }

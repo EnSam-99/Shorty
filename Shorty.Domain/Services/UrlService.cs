@@ -1,5 +1,5 @@
-﻿using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services;
@@ -24,7 +24,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         var shorty = new ShortyEntity
         {
             CreatedAt = DateTime.UtcNow,
-            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromHours(10)),
+            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromDays(101)),
             ShortCode = shortUrl,
             Url = originalUrl,
             UserId = userId,
@@ -41,6 +41,22 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         await _shortCodeHistoryRepository.AddHistoryAsync(history);
         return shorty;
     }
+
+    public Task<bool> DeactivateByIdAsync(string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteByEmailAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
     {
         var list = await _shortyUrlRepository.GetAllShortyAsync();
@@ -112,4 +128,28 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
             throw new ArgumentNullException($"Id '{nameof(id)}' is not found");
         }
     }
+    //public async Task<bool> DeleteByIdAsync(int id)
+    //{
+    //    //var rowsDeleted = await context.Shorties
+    //    //    .Where(s => s.Id == id)
+    //    //    .ExecuteDeleteAsync();
+
+    //    //return rowsDeleted != 0;
+    //}
+    //public async Task<bool> DeleteByEmailAsync(string email)
+    //{
+    //    //var rowsDeleted = await context.Shorties
+    //    //       .Where(s => s.User.Email == email)
+    //    //       .ExecuteDeleteAsync();
+
+    //    //return rowsDeleted != 0;
+    //}
+    //public async Task<bool> DeactivateByIdAsync(int id)
+    //{
+    //    //var rowsUpdated = await context.Shorties
+    //    //      .ExecuteUpdateAsync(s => s.SetProperty(s => s.IsActive, false));
+
+    //    //return rowsUpdated != 0;
+    //}
+
 }

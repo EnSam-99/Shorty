@@ -1,5 +1,5 @@
-﻿using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services;
