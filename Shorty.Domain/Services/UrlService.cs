@@ -4,9 +4,10 @@ using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services;
 
-public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository) : IUrlService<ShortyEntity>
+public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
+    IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository) : IUrlService<ShortyEntity>
 {
-    public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
+    public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId, int? expirationHours = null)
     {
 
         if (string.IsNullOrEmpty(originalUrl))
@@ -21,11 +22,17 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
             throw new ArgumentException("Url is exist");
         }
 
+		if (expirationHours.HasValue && expirationHours <= 0)
+			throw new ArgumentException("Expiration time must be positive.");
+
+		var expiresAt = DateTime.UtcNow.AddMinutes(expirationHours ?? 10);
+
         var shorty = new ShortyEntity
         {
             CreatedAt = DateTime.UtcNow,
-            ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromHours(10)),
-            ShortCode = shortUrl,
+            ExpiredAt = expiresAt,
+            IsActive = true,
+			ShortCode = shortUrl,
             Url = originalUrl,
             UserId = userId,
         };
@@ -41,7 +48,8 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         await _shortCodeHistoryRepository.AddHistoryAsync(history);
         return shorty;
     }
-    public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
+
+	public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
     {
         var list = await _shortyUrlRepository.GetAllShortyAsync();
         if (list == null || !list.Any())

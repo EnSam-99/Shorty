@@ -14,8 +14,10 @@ public class AppDbContext : DbContext
     public DbSet<ShortyEntity> Shorties { get; set; }
     public DbSet<ShortyHistoryEntity> Histories { get; set; }
     public DbSet<VisitEntity> Visits { get; set; }
+	public DbSet<ShortyClickCount> ShortyClickCounts { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Controllers;
@@ -19,4 +20,23 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
 
         return Ok(links);
     }
+
+	[HttpPost("recalculate-scores")]
+	public async Task<IActionResult> RecalculateScores()
+	{
+		await analyticsService.RecalculateScoresAsync();
+		return Ok("Scores recalculated successfully.");
+	}
+
+	[HttpGet("top-performance")]
+	public async Task<IActionResult> GetTopPerformance([FromQuery] int limit = 10)
+	{
+		var topShorties = await analyticsService.GetTopShortLinksAsync(limit);
+
+		if (topShorties == null || !topShorties.Any())
+			return NotFound(new { message = "No shorties found." });
+
+		return Ok(topShorties);
+	}
+
 }

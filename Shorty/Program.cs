@@ -29,7 +29,12 @@ builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
+builder.Services.AddSingleton<IShortyExpiryService, ShortyExpiryService>();
+builder.Services.AddHostedService<ShortyExpiryBackgroundService>();
+
 builder.Services.AddControllers();
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(sp =>
