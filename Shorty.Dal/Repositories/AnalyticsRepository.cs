@@ -48,41 +48,26 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
         return isActive;
     }
 
-    public async Task<decimal> GetShortLinkScoreAsync(int id)
-    {
-        var visitsCount = await GetTotalVisitsByIdAsync(id);
-        var age = await GetShortLinkAgeAsync(id);
-        var isActive = await GetActiveShoryLinkAsync(id);
-        decimal score;
-
-        if (id <= 0)
-        {
-            score = 0;
-            return score;
-        }
-
-        if (visitsCount == 0 && age == 100 && !isActive)
-        {
-            score = 0;
-            return score;
-        }
-
-        if (age == 0)
-        {
-            age = 1;
-        }
-
-        score = (decimal)(visitsCount / age) + (isActive ? 10 : 0);
-
-        return score;
-    }
-
     public async Task RecalculateScores()
     {
-        var shorties = await _repository.GetAllShortyAsync();
+        var shorties = await _db.Shorties
+                             .OrderByDescending(s => s.Score)
+                             .ToListAsync();
+
         foreach (var shorty in shorties)
         {
-            var score = await GetShortLinkScoreAsync(shorty.Id);
+            var visitsCount = await GetTotalVisitsByIdAsync(shorty.Id);
+            var age = await GetShortLinkAgeAsync(shorty.Id);
+            var isActive = await GetActiveShoryLinkAsync(shorty.Id);
+            if (visitsCount == 0 && age == 100 && !isActive)
+            {
+                return;
+            }
+            if (age == 0)
+            {
+                age = 1;
+            }
+            var score = (decimal)(visitsCount / age) + (isActive ? 10 : 0);
             shorty.Score = score;
         }
         await _db.SaveChangesAsync();

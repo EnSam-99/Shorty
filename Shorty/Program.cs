@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Shorty.Components;
 using Shorty.Dal;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Repositories;
