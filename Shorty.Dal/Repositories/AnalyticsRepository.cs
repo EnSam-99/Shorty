@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal.Entities;
 using Shorty.Dal.Repositories.Abstractions;
-using System;
 
 namespace Shorty.Dal.Repositories;
 
 public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEntity> _repository) : IAnalyticsRepository
 {
     public async Task<List<ShortyEntity>> GetTopPerformingAsync()
-    {       
+    {
         return await _repository.GetAllShortyAsync();
     }
 
@@ -61,7 +60,7 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
             score = 0;
             return score;
         }
-       
+
         if (visitsCount == 0 && age == 100 && !isActive)
         {
             score = 0;

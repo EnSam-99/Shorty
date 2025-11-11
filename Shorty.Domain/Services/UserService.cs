@@ -21,13 +21,14 @@ public class UserService(IUserRepository<UserEntity> _userRepository) : IUserSer
 
         if (exist)
         {
-            throw new ArgumentException(" User is Exists");
+            throw new ArgumentException("User is Exists");
         }
 
         var user = new UserEntity
         {
             Name = userName,
-            Email = email
+            Email = email,
+            IsAdmin = false
         };
         await _userRepository.AddUserAsync(user);
         return user;

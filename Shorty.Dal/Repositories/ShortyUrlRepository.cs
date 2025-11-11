@@ -119,7 +119,7 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
     }
 
     public async Task<bool> DeactivateByIdAsync(string shortyName)
-    {        
+    {
         if (string.IsNullOrWhiteSpace(shortyName))
             throw new ArgumentException("ShortyName is empty.", nameof(shortyName));
 

@@ -1,5 +1,4 @@
 ﻿using Shorty.Dal.Entities;
-using Shorty.Domain.Models.Response;
 
 namespace Shorty.Domain.Services.Abstractions;
 

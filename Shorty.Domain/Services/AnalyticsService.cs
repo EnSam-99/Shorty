@@ -1,18 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
 using Shorty.Dal.Repositories.Abstractions;
-using Shorty.Domain.Models.Response;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Domain.Services;
 
-public class AnalyticsService (IAnalyticsRepository _repo) : IAnalyticsService
+public class AnalyticsService(IAnalyticsRepository _repo) : IAnalyticsService
 {
     public Task<List<ShortyEntity>> GetTopPerformingAsync()
     {
         var result = _repo.GetTopPerformingAsync();
-        if(result is null)
+        if (result is null)
         {
             throw new InvalidOperationException("No data found for top performing short URLs.");
         }

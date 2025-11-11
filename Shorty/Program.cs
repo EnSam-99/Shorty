@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IUserRepository<UserEntity>, UserRepository>();
 builder.Services.AddScoped<IUserService<UserEntity>, UserService>();
-builder.Services.AddScoped<IShortyUrlRepository<ShortyEntity>,ShortyUrlRepository>();
+builder.Services.AddScoped<IShortyUrlRepository<ShortyEntity>, ShortyUrlRepository>();
 builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
 builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();

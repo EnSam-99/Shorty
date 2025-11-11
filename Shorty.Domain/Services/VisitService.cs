@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
 using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
@@ -10,12 +8,12 @@ public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEnt
 {
     public async Task AddVisitAsync(string shortCode)
     {
-        if(string.IsNullOrWhiteSpace(shortCode))
+        if (string.IsNullOrWhiteSpace(shortCode))
         {
             throw new ArgumentException("ShortCode can't be null or empty.", nameof(shortCode));
         }
         var originalShorty = await _shortyRepo.GetByShortCodeAsync(shortCode);
-               
+
         if (originalShorty == null)
         {
             return;
@@ -23,5 +21,5 @@ public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEnt
 
         var visit = new VisitEntity { ShortyId = originalShorty.Id, CreatedDate = DateTime.UtcNow };
         await _repo.AddVisitAsync(visit);
-    }   
+    }
 }

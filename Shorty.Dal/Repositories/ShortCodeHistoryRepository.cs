@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shorty.Dal.Entities;
-using System.Xml.Linq;
 
 namespace Shorty.Dal.Repositories.Abstractions;
 
