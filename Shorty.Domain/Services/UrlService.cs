@@ -26,6 +26,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
             CreatedAt = DateTime.UtcNow,
             ExpiredAt = DateTime.UtcNow.Add(TimeSpan.FromDays(101)),
             ShortCode = shortUrl,
+            IsActive = true,
             Url = originalUrl,
             UserId = userId,
         };

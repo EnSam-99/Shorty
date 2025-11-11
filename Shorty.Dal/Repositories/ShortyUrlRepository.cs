@@ -20,10 +20,12 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
         var isExists = await _context.Shorties.AnyAsync(u => u.Id == id);
         return isExists;
     }
-    public async Task<List<ShortyEntity>> GetAllShortyAsync()
+    public async Task<List<ShortyEntity>> GetAllShortyAsync(int count = 10)
     {
-        var list = await _context.Shorties.OrderByDescending(s => s.Score).ToListAsync();
-        return list;
+        return await _context.Shorties
+                             .OrderByDescending(s => s.Score)
+                             .Take(count)
+                             .ToListAsync();
     }
     public async Task<ShortyEntity> GetByIDAsync(int id)
     {
@@ -57,7 +59,6 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
 
         return shorty;
     }
-
 
     public async Task UpdateAsync(ShortyEntity shortyModel)
     {

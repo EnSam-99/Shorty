@@ -19,4 +19,11 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
 
         return Ok(links);
     }
+    [HttpPost("recalculate-score")]
+    public async Task<IActionResult> UpdateAllScore()
+    {
+        await analyticsService.RecalculateScoresAsinc();
+
+        return Ok();
+    }
 }

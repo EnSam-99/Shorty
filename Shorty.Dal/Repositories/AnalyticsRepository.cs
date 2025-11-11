@@ -5,12 +5,11 @@ using System;
 
 namespace Shorty.Dal.Repositories;
 
-public class AnalyticsRepository(AppDbContext _db, ShortyUrlRepository _repository) : IAnalyticsRepository
+public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEntity> _repository) : IAnalyticsRepository
 {
     public async Task<List<ShortyEntity>> GetTopPerformingAsync()
-    {
-        var shorties = await _repository.GetAllShortyAsync();
-        return shorties.Take(10).ToList();
+    {       
+        return await _repository.GetAllShortyAsync();
     }
 
     public async Task<int> GetTotalVisitsByIdAsync(int shortyId)
@@ -18,8 +17,8 @@ public class AnalyticsRepository(AppDbContext _db, ShortyUrlRepository _reposito
         if (shortyId <= 0)
             throw new ArgumentException("ShortyId must be greater than zero.", nameof(shortyId));
 
-        var totalVisits = _db.Visits.Count(v => v.ShortyId == shortyId);
-        return totalVisits;
+        var totalVisits = _db.Visits.CountAsync(v => v.ShortyId == shortyId);
+        return await totalVisits;
     }
 
     public async Task<int> GetShortLinkAgeAsync(int shortyId)

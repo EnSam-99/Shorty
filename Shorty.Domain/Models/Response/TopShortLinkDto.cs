@@ -2,8 +2,8 @@
 
 public class TopShortLinkDto
 {
-    public string ShortUrl { get; set; }
-    public string OriginalUrl { get; set; }
-    public long Clicks { get; set; }
+    public string ShortCode { get; set; }
+    public string Url { get; set; }
+    public long Score { get; set; }
     public DateTime LastAccessedDate { get; set; }
 }
