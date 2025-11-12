@@ -34,4 +34,6 @@ public class ShortyEntity
     public UserEntity User { get; set; }
 
     public ICollection<VisitEntity> Visits { get; set; }
+    
+    public ICollection<ClickDetailEntity> ClickDetails { get; set; }
 }

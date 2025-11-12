@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shorty.Dal;
@@ -11,9 +12,11 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108210724_CreateTables")]
+    partial class CreateTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace Shorty.Dal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Shorty.Dal.Entities.ClickDetailEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AccessedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<int>("ShortyId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShortyId");
-
-                    b.ToTable("ClickDetails");
-                });
 
             modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
@@ -169,17 +146,6 @@ namespace Shorty.Dal.Migrations
                     b.ToTable("Visits");
                 });
 
-            modelBuilder.Entity("Shorty.Dal.Entities.ClickDetailEntity", b =>
-                {
-                    b.HasOne("Shorty.Dal.Entities.ShortyEntity", "Shorty")
-                        .WithMany("ClickDetails")
-                        .HasForeignKey("ShortyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shorty");
-                });
-
             modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
                     b.HasOne("Shorty.Dal.Entities.UserEntity", "User")
@@ -215,8 +181,6 @@ namespace Shorty.Dal.Migrations
 
             modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
-                    b.Navigation("ClickDetails");
-
                     b.Navigation("Visits");
                 });
 

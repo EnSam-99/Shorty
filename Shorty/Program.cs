@@ -6,8 +6,10 @@ using Shorty.Dal;
 using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
+using Shorty.Dal.Repositories;
 using Shorty.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,11 +29,16 @@ builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
 builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IAnalyticsRepository,AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IClickDetailRepository,ClickDetailRepository>();
+builder.Services.AddScoped<IClickDetailService, ClickDetailService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped(sp =>
 {
     var nav = sp.GetRequiredService<NavigationManager>();

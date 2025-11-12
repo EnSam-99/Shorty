@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shorty.Dal;
@@ -11,9 +12,11 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251111211605_CreateClickDetails")]
+    partial class CreateClickDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,7 +175,7 @@ namespace Shorty.Dal.Migrations
             modelBuilder.Entity("Shorty.Dal.Entities.ClickDetailEntity", b =>
                 {
                     b.HasOne("Shorty.Dal.Entities.ShortyEntity", "Shorty")
-                        .WithMany("ClickDetails")
+                        .WithMany()
                         .HasForeignKey("ShortyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -215,8 +218,6 @@ namespace Shorty.Dal.Migrations
 
             modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
-                    b.Navigation("ClickDetails");
-
                     b.Navigation("Visits");
                 });
 

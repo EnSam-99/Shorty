@@ -1,32 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal;
+using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Models.Response;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Domain.Services;
-
-public class AnalyticsService : IAnalyticsService
+public class AnalyticsService(IAnalyticsRepository repository): IAnalyticsService
 {
-    private readonly AppDbContext dbContext;
-
-    public AnalyticsService(AppDbContext dbContext)
+    public async Task RecalculateAllScoresAsync()
     {
-        this.dbContext = dbContext;
+        var shorties = await repository.GetAllShortiesAsync();
+        foreach (var sh in shorties )
+        {
+            var ageInDays = (DateTime.UtcNow - sh.CreatedAt).TotalDays;
+            if (ageInDays <= 0)
+            {
+                ageInDays = 1;
+            }
+
+            var score =(sh.Clicks / ageInDays) +(sh.IsActive ? 10 : 0);
+            sh.Score = (decimal)score;
+        }
     }
 
-    public async Task<List<TopShortLinkDto>> GetTopShortLinksAsync(string email)
+    public async Task<IList<ShortyEntity>> GetTopPerformingShortiesAsync(int limit = 10)
     {
-        return await dbContext.Shorties
-            .Where(s => s.User.Email == email)
-            .Select(s => new TopShortLinkDto
-            {
-                ShortUrl = s.ShortCode,
-                OriginalUrl = s.Url,
-                Clicks = s.Visits.Count(),
-                LastAccessedDate = s.Visits.Max(v => v.CreatedDate)
-            })
-            .OrderByDescending(s => s.Clicks)
-            .Take(10)
-            .ToListAsync();
+        return await repository.GetTopPerformingShortiesAsync(limit);
     }
 }

@@ -7,16 +7,24 @@ namespace Shorty.Controllers;
 [Route("api/[controller]")]
 public class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
 {
-    [HttpGet("top/{email}")]
-    public async Task<IActionResult> GetTopLinks(string email)
+    [HttpPost("recalculate-scores")]
+    public async Task<IActionResult> RecalculateScores()
     {
-        var links = await analyticsService.GetTopShortLinksAsync(email);
-
-        if (links == null || links.Count == 0)
+        try
         {
-            return NotFound("No links found for the specified email.");
+            await analyticsService.RecalculateAllScoresAsync();
+            return Ok(new { message = "Scores recalculated successfully" });
         }
-
-        return Ok(links);
+        catch (Exception ex)
+        {
+            // ← ԱՅՍՏԵՂ ՏԵՍՆԵԼՈՒ ԵՆՔ EXACT ERROR-Ը
+            return StatusCode(500, new { error = ex.Message, stackTrace = ex.StackTrace });
+        }
+    }
+    [HttpGet("top-performance")]
+    public async Task<IActionResult> GetTopPerformers([FromQuery] int limit = 10)
+    {
+        var result = await analyticsService.GetTopPerformingShortiesAsync(limit);
+        return Ok(result);
     }
 }

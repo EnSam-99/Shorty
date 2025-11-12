@@ -29,7 +29,7 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
     {
         var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.Id == id);
         if (shorty == null)
-            throw new KeyNotFoundException($"Short code '{shorty}' not found.");
+            throw new KeyNotFoundException($"Short code with ID '{id}' not found.");
 
         return shorty;
     }
