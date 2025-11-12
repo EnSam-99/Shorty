@@ -20,9 +20,11 @@ public class ShortyEntity
 
     public long Clicks { get; set; }
 
+    public DateTime LastClickAt { get; set; }
     public bool IsActive { get; set; }
 
     public decimal Score { get; set; }
+    public DateTime ScoreUpdatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 

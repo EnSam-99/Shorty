@@ -8,7 +8,8 @@ public interface IShortyUrlRepository<T>
     public Task AddShortyAsync(T shortyModel);
     public Task UpdateAsync(ShortyEntity newShortCode);
     public Task<T> GetByIDAsync(int id);
-    public Task<List<T>> GetAllShortyAsync(int count = 10);
+    public Task<List<T>> GetTopShortiesByScoreAsync();
+    public Task<List<T>> GetAllShortiesAsync();
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
     public Task<bool> ExistsId(int id);
     public Task<string> GetOriginalShortUrlAsync(string shortCode);

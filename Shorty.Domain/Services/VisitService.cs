@@ -4,7 +4,7 @@ using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Domain.Services;
 
-public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEntity> _shortyRepo) : IVisitService
+public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEntity> _shortyRepo, IAnalyticsRepository _analytics) : IVisitService
 {
     public async Task AddVisitAsync(string shortCode)
     {
@@ -18,8 +18,9 @@ public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEnt
         {
             return;
         }
-
         var visit = new VisitEntity { ShortyId = originalShorty.Id, CreatedDate = DateTime.UtcNow };
+        originalShorty.LastClickAt = visit.CreatedDate;
+        originalShorty.Clicks = await _analytics.GetTotalVisitsByIdAsync(originalShorty.Id);
         await _repo.AddVisitAsync(visit);
     }
 }

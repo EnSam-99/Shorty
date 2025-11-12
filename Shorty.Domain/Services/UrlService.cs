@@ -60,7 +60,8 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
 
     public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()
     {
-        var list = await _shortyUrlRepository.GetAllShortyAsync();
+        var list = await _shortyUrlRepository.GetTopShortiesByScoreAsync();
+;
         if (list == null || !list.Any())
             throw new InvalidOperationException("Short codes list is empty.");
         return list;
