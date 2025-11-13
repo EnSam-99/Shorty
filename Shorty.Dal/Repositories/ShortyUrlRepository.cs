@@ -81,4 +81,27 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
     {
 
     }
+
+    public async Task<List<ShortyEntity>> GetAllWithVisitsAsync()
+    {
+        var list = await _context.Shorties
+            .Include(s => s.Visits)
+            .OrderByDescending(s => s.Id)
+            .ToListAsync();
+        return list;
+    }
+
+    public async Task<List<ShortyEntity>> GetTopByScoreAsync(int limit)
+    {
+        var list = await _context.Shorties
+            .OrderByDescending(s => s.Score)
+            .Take(limit)
+            .ToListAsync();
+        return list;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 }

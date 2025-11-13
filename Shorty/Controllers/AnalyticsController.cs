@@ -19,4 +19,15 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
 
         return Ok(links);
     }
+
+    [HttpGet("user/{email}")]
+    public async Task<IActionResult> GetUserAnalytics(string email)
+    {
+        var analytics = await analyticsService.GetUserAnalyticsAsync(email);
+        if (analytics == null)
+        {
+            return NotFound("User not found.");
+        }
+        return Ok(analytics);
+    }
 }

@@ -13,4 +13,8 @@ public interface IShortyUrlRepository<T>
     public Task<string> GetOriginalShortUrlAsync(string shortCode);
     public Task<bool> IsShortCodeValidAsync(string shortCode);
     public Task DeleteIsNotValidShortyByName(string shortyName);
+    public Task<List<ShortyEntity>> GetAllWithVisitsAsync();
+    public Task<List<ShortyEntity>> GetTopByScoreAsync(int limit);
+    public Task SaveChangesAsync();
+
 }
