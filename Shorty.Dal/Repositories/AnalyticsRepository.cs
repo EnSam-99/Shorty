@@ -27,8 +27,7 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
             throw new InvalidOperationException($"Shorty with ID={shortyId} not found.");
         }
 
-            await _db.SaveChangesAsync();
-        
+            await _db.SaveChangesAsync();        
 
         return totalVisits;
     }
@@ -60,36 +59,38 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
 
     public async Task RecalculateScores()
     {
+        var now = DateTime.UtcNow;    
 
-        var nowTime = DateTime.UtcNow;
-        var shorties = await _db.Shorties.Where(s =>s.ScoreUpdatedAt < s.LastClickAt || s.ScoreUpdatedAt < nowTime.AddMinutes(-15) || s.Clicks !=0)
-                             .OrderByDescending(s => s.ScoreUpdatedAt)
-                             .ToListAsync();
+        var shorties = await _db.Shorties
+            .Where(s => s.IsActive && (
+                   s.ScoreUpdatedAt < now.AddMinutes(-15)
+                || s.ScoreUpdatedAt < s.LastClickAt)
+            )
+            .OrderBy(s => s.ScoreUpdatedAt)
+            .Take(1000)
+            .ToListAsync();
 
-        if (shorties == null) return;  
+        if (shorties.Count == 0)
+            return;
 
         foreach (var shorty in shorties)
         {
-            if (shorty == null)
-                throw new KeyNotFoundException($"Shorty '{shorty}' not found;");
-
-            var age = DateTime.UtcNow - shorty.CreatedAt;
-            var clicks = shorty.Clicks;            
+            var age = now - shorty.CreatedAt;
+            var clicks = shorty.Clicks;
             var isActive = await GetActiveShoryLinkAsync(shorty.Id);
-            if (isActive)
+
+            shorty.ScoreUpdatedAt = now;
+
+            if (!isActive)
             {
-                int safeAge = Math.Max(1, (int)age.TotalDays);
-
-                var score = ((decimal)clicks / safeAge) + (isActive ? 10 : 0);
-               
-                    shorty.Score = score;
-                    shorty.ScoreUpdatedAt = nowTime;
-                
-
+                continue;
             }
 
-
+            var safeAge = Math.Max(1, (int)age.TotalDays);
+            shorty.Score = ((decimal)clicks / safeAge) + 10;
         }
+
         await _db.SaveChangesAsync();
     }
+
 }
