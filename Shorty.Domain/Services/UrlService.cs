@@ -25,7 +25,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
 		if (expirationHours.HasValue && expirationHours <= 0)
 			throw new ArgumentException("Expiration time must be positive.");
 
-		var expiresAt = DateTime.UtcNow.AddMinutes(expirationHours ?? 10);
+		var expiresAt = DateTime.UtcNow.AddHours(expirationHours ?? 48);
 
         var shorty = new ShortyEntity
         {
@@ -47,6 +47,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         };
         await _shortCodeHistoryRepository.AddHistoryAsync(history);
         return shorty;
+    
     }
 
 	public async Task<IEnumerable<ShortyEntity>> GetAllShortCodesAsync()

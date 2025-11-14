@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shorty.Dal.Entities;
 using Shorty.Domain.Models;
-using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
 using Shorty.Models;
 
@@ -11,19 +10,19 @@ namespace Shorty.Controllers;
 [ApiController]
 public class ShortyController : ControllerBase 
 {
-	private readonly IShortyExpiryService _shortyExpiryService;
-	private readonly IUrlService<ShortyEntity> _service;
+	private readonly IShortyExpiryService shortyExpiryService;
+	private readonly IUrlService<ShortyEntity> service;
 
 	public ShortyController(IUrlService<ShortyEntity> service, IShortyExpiryService shortyExpiryService)
 	{
-		_service = service;
-		_shortyExpiryService = shortyExpiryService;
+		this.service = service;
+		this.shortyExpiryService = shortyExpiryService;
 	}
 
 	[HttpPost("add-shorty")]
 	public async Task<IActionResult> AddShorty([FromBody] CreateShortyRequestDto req)
 	{
-		var entity = await _service.CreateShortAsync(req.Url, req.UserId);
+		var entity = await service.CreateShortAsync(req.Url, req.UserId);
 		return Ok(new ShortyDto
 		{
 			Url = entity.Url,
@@ -41,7 +40,7 @@ public class ShortyController : ControllerBase
 		if (shorty.ShortyId == 0)
 			return BadRequest("ShortyId is required.");
 
-		await _service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
+		await service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
 
 		return Ok();
 	}
@@ -49,7 +48,7 @@ public class ShortyController : ControllerBase
 	[HttpGet("all")]
 	public async Task<IActionResult> GetAllShorties()
 	{
-		var list = await _service.GetAllShortCodesAsync();
+		var list = await service.GetAllShortCodesAsync();
 
 		var dto = list.Select(x => new ShortyDto
 		{
@@ -65,7 +64,7 @@ public class ShortyController : ControllerBase
 	[HttpGet("expired")]
 	public async Task<IActionResult> GetExpiredShorties()
 	{
-		var expired = await _shortyExpiryService.GetExpiredShortiesAsync();
+		var expired = await shortyExpiryService.GetExpiredShortiesAsync();
 		
 		if (!expired.Any())
 			return NotFound("No expired shorties found.");

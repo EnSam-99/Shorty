@@ -3,26 +3,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Shorty.Dal;
 using Shorty.Dal.Entities;
 using Shorty.Domain.Services.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shorty.Domain.Services
 {
 	public class ShortyExpiryService : IShortyExpiryService
 	{
-		private readonly IServiceProvider _serviceProvider;
+		private readonly IServiceProvider serviceProvider;
 
 		public ShortyExpiryService(IServiceProvider serviceProvider)
 		{
-			_serviceProvider = serviceProvider;
+			this.serviceProvider = serviceProvider;
 		}
 
 		public async Task CheckAndExpireShortiesAsync()
 		{
-			using var scope = _serviceProvider.CreateScope();
+			using var scope = serviceProvider.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 			var expired = await db.Shorties
@@ -40,7 +35,7 @@ namespace Shorty.Domain.Services
 
 		public async Task<IEnumerable<ShortyEntity>> GetExpiredShortiesAsync()
 		{
-			using var scope = _serviceProvider.CreateScope();
+			using var scope = serviceProvider.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 			return await db.Shorties

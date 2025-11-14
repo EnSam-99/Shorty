@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Controllers;
@@ -9,9 +8,9 @@ namespace Shorty.Controllers;
 public class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
 {
     [HttpGet("top/{email}")]
-    public async Task<IActionResult> GetTopLinks(string email)
+    public async Task<IActionResult> GetTopLinks(string email, [FromQuery] int limit = 10)
     {
-        var links = await analyticsService.GetTopShortLinksAsync(email);
+        var links = await analyticsService.GetTopShortLinksByEmailAsync(email, limit);
 
         if (links == null || links.Count == 0)
         {
@@ -22,9 +21,12 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
     }
 
 	[HttpPost("recalculate-scores")]
-	public async Task<IActionResult> RecalculateScores()
+	public async Task<IActionResult> RecalculateScores([FromQuery]int defaultBatchSize = 100)
 	{
-		await analyticsService.RecalculateScoresAsync();
+		if (defaultBatchSize < 1)
+			return BadRequest("Batch size must be >= 1");
+
+		await analyticsService.RecalculateScoresAsync(defaultBatchSize);
 		return Ok("Scores recalculated successfully.");
 	}
 

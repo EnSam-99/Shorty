@@ -8,5 +8,5 @@ public class TopShortLinkDto
 
 	public decimal Score { get; set; }
 
-	public DateTime LastAccessedDate { get; set; }
+	public DateTime? LastAccessedDate { get; set; }
 }

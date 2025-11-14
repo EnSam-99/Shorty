@@ -1,6 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using Shorty.Domain.Services.Abstractions;
+﻿using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services
 {
