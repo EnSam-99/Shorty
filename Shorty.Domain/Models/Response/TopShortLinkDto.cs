@@ -4,6 +4,7 @@ public class TopShortLinkDto
 {
     public string ShortCode { get; set; }
     public string Url { get; set; }
-    public long Score { get; set; }
+    public decimal Score { get; set; }
+    public long Clicks { get; set; }
     public DateTime LastClickedAt { get; set; }
 }

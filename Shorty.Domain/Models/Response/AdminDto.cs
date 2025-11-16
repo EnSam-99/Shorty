@@ -1,6 +1,12 @@
-﻿namespace Shorty.Dal;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class AdminUsersDto
+namespace Shorty.Domain.Models.Response;
+
+public class AdminDto
 {
     public int UserId { get; set; }
     public string UserName { get; set; } = default!;
@@ -9,4 +15,5 @@ public class AdminUsersDto
     public int LinksCount { get; set; }
     public long TotalClicks { get; set; }
     public int ActiveLinks { get; set; }
+    public bool IsActive { get; set; } = true;
 }

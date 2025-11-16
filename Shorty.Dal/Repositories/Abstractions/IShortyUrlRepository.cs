@@ -8,7 +8,7 @@ public interface IShortyUrlRepository<T>
     public Task AddShortyAsync(T shortyModel);
     public Task UpdateAsync(ShortyEntity newShortCode);
     public Task<T> GetByIDAsync(int id);
-    public Task<List<T>> GetTopShortiesByScoreAsync();
+
     public Task<List<T>> GetAllShortiesAsync();
     public Task<bool> ExistsByUrlOrShortAsync(string origonalUrl, string shortUrl);
     public Task<bool> ExistsId(int id);
@@ -18,5 +18,4 @@ public interface IShortyUrlRepository<T>
     public Task DeleteIsNotValidShortyByName(string shortyName);
     public Task<bool> DeleteByIdAsync(int id);
     public Task<bool> DeleteByEmailAsync(string email);
-    public Task<bool> DeactivateByIdAsync(string name);
 }

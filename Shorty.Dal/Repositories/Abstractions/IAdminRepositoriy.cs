@@ -2,6 +2,9 @@
 
 public interface IAdminRepositoriy
 {
-    public Task<List<AdminUsersDto>> GetAllUsersForAdminAsync();
-    public Task DeleteShortyByIdAsync(int id);
+    public Task<List<UsersAdminDto>> GetAllUsersForAdminAsync();
+    public Task DeleteShortyByIdAsync(int id);  
+    public Task<int> DeleteAllInactiveLinks();
+    public Task<int> DeactivateExpiredShortiesAsync();
+    public Task DeleteUserAsync(int id);
 }

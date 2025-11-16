@@ -20,12 +20,7 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
         var isExists = await _context.Shorties.AnyAsync(u => u.Id == id);
         return isExists;
     }
-    public async Task<List<ShortyEntity>> GetTopShortiesByScoreAsync()
-    {
-        return await _context.Shorties.OrderByDescending(s=>s.Score)
-                             .Take(10)
-                             .ToListAsync();
-    }
+
     public async Task<ShortyEntity> GetByIDAsync(int id)
     {
         var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.Id == id);
@@ -117,22 +112,9 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
         return deleteByEmail != 0;
     }
 
-    public async Task<bool> DeactivateByIdAsync(string shortyName)
-    {
-        if (string.IsNullOrWhiteSpace(shortyName))
-            throw new ArgumentException("ShortyName is empty.", nameof(shortyName));
-
-        if (!await IsShortCodeValidAsync(shortyName))
-            throw new InvalidOperationException($"Shotry is not valid {shortyName}");
-
-        var deactivate = await _context.Shorties.Where(s => s.ShortCode == shortyName && s.Visits.Count == 0 && !s.IsActive && DateTime.UtcNow - s.CreatedAt >= TimeSpan.FromDays(100)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
-
-        return deactivate != 0;
-    }
-
     public Task<List<ShortyEntity>> GetAllShortiesAsync()
     {
-        var all = _context.Shorties.OrderByDescending(s => s.Score).ToListAsync();
+        var all = _context.Shorties.Where(s => s.IsActive || s.ExpiredAt > s.CreatedAt && s.Clicks > 0).OrderByDescending(s => s.Score).Take(50).ToListAsync();
         return all;
     }
 }

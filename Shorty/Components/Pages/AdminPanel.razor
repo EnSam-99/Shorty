@@ -1,0 +1,205 @@
+﻿@page "/admin"
+@using Shorty.Domain.Models.Response
+@inject HttpClient Http
+
+<h3>Admin panel</h3>
+
+@if (isLoading)
+{
+    <p>Загрузка...</p>
+}
+else if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+else
+{
+    <div class="mb-3">
+        <button class="btn btn-outline-danger me-2" @onclick="DeleteInactiveLinksAsync">
+            Delete All inactive links
+        </button>
+        <button class="btn btn-outline-warning" @onclick="DeactivateExpiredShortiesAsync">
+            Deactivate All inactive links
+        </button>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Admin</th>
+                <th>Links</th>
+                <th>Clicks</th>
+                <th>Active links</th>
+                <th>Is Active</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.UserId</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@(user.IsAdmin ? "yes" : "no")</td>
+                    <td>@user.LinksCount</td>
+                    <td>@user.TotalClicks</td>
+                    <td>@user.ActiveLinks</td>
+                    <td>@(user.IsActive ? "yes" : "no")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1"
+                                @onclick="() => DeactivateUserAsync(user.UserId)"
+                                disabled=@(user.IsActive || user.IsAdmin)>
+                            Deactivate
+                        </button>
+
+
+
+                        <button class="btn btn-sm btn-danger"
+                                @onclick="() => DeleteUserAsync(user.UserId)"
+                                >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<AdminDto> users = new();
+    private bool isLoading = true;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsersAsync();
+    }
+
+    private async Task LoadUsersAsync()
+    {
+        try
+        {
+            isLoading = true;
+            error = null;
+
+            var result = await Http.GetFromJsonAsync<List<AdminDto>>("api/admin/users");
+            users = result ?? new List<AdminDto>();
+        }
+        catch (Exception ex)
+        {
+            error = $"Error loading users: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task DeleteUserAsync(int userId)
+    {
+        if (!await ConfirmAsync("Delete the user and all their links?"))
+            return;
+
+        try
+        {
+            var response = await Http.DeleteAsync($"api/admin/user/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var user = users.FirstOrDefault(u => u.UserId == userId);
+                if (user is not null)
+                    users.Remove(user);
+            }
+            else
+            {
+                error = $"Failed to delete user (code {response.StatusCode})";
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error deleting user:  {ex.Message}";
+        }
+    }
+
+    private async Task DeactivateUserAsync(int userId)
+    {
+        if (!await ConfirmAsync("Deactivate the user and their links?"))
+            return;
+
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Patch, $"api/admin/users/{userId}/deactivate");
+            var response = await Http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var user = users.FirstOrDefault(u => u.UserId == userId);
+                if (user is not null)
+                    user.IsActive = false;
+            }
+            else
+            {
+                error = $"Failed to deactivate user (code {response.StatusCode})";
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error when deactivating user: {ex.Message}";
+        }
+    }
+
+    private async Task DeleteInactiveLinksAsync()
+    {
+        if (!await ConfirmAsync("Remove all inactive links throughout the entire system?"))
+            return;
+
+        try
+        {
+            var response = await Http.DeleteAsync("api/admin/delete-inactive-shorties");
+            if (!response.IsSuccessStatusCode)
+            {
+                error = $"Failed to remove inactive links (code {response.StatusCode})";
+            }
+            else
+            {               
+                await LoadUsersAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error when removing inactive links: {ex.Message}";
+        }
+    }
+
+    private async Task DeactivateExpiredShortiesAsync()
+    {
+        if (!await ConfirmAsync("Deactivate all expired links throughout the entire system?"))
+            return;
+
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Patch, "api/admin/deactivate-expired-shorties");
+            var response = await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                error = $"Failed to deactivate expired links (code {response.StatusCode})";
+            }
+            else
+            {
+                await LoadUsersAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error when deactivating expired links:  {ex.Message}";
+        }
+    }
+    private Task<bool> ConfirmAsync(string message)
+    {
+        return Task.FromResult(true);
+    }
+}

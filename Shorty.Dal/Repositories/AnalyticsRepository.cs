@@ -4,11 +4,13 @@ using Shorty.Dal.Repositories.Abstractions;
 
 namespace Shorty.Dal.Repositories;
 
-public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEntity> _repository) : IAnalyticsRepository
+public class AnalyticsRepository(AppDbContext _db) : IAnalyticsRepository
 {
     public async Task<List<ShortyEntity>> GetTopPerformingAsync()
     {
-        return await _repository.GetTopShortiesByScoreAsync();
+        return await _db.Shorties.OrderByDescending(s => s.Score)
+                            .Take(500)
+                            .ToListAsync();
     }
 
     public async Task<int> GetTotalVisitsByIdAsync(int shortyId)
@@ -16,7 +18,7 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
         if (shortyId <= 0)
         {
             throw new ArgumentException("ShortyId must be greater than zero.", nameof(shortyId));
-        }         
+        }
 
         var totalVisits = await _db.Visits.CountAsync(v => v.ShortyId == shortyId);
 
@@ -27,7 +29,7 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
             throw new InvalidOperationException($"Shorty with ID={shortyId} not found.");
         }
 
-            await _db.SaveChangesAsync();        
+        await _db.SaveChangesAsync();
 
         return totalVisits;
     }
@@ -59,15 +61,14 @@ public class AnalyticsRepository(AppDbContext _db, IShortyUrlRepository<ShortyEn
 
     public async Task RecalculateScores()
     {
-        var now = DateTime.UtcNow;    
+        var now = DateTime.UtcNow;
 
         var shorties = await _db.Shorties
-            .Where(s => s.IsActive && (
-                   s.ScoreUpdatedAt < now.AddMinutes(-15)
-                || s.ScoreUpdatedAt < s.LastClickAt)
+            .Where(s => s.IsActive && s.ExpiredAt > now &&
+                 s.ScoreUpdatedAt < s.LastClickAt
             )
-            .OrderBy(s => s.ScoreUpdatedAt)
-            .Take(1000)
+            .OrderByDescending(s => s.ScoreUpdatedAt)
+            .Take(500)
             .ToListAsync();
 
         if (shorties.Count == 0)

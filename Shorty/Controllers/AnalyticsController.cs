@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shorty.Domain.Models.Response;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Controllers;
@@ -7,15 +8,21 @@ namespace Shorty.Controllers;
 [Route("api/[controller]")]
 public class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
 {
-    [HttpGet("top/{email}")]
-    public async Task<IActionResult> GetTopLinks(string email)
+    [HttpGet("top-performance/limit=10")]
+    public async Task<ActionResult<List<TopShortLinkDto>>> GetTopLinks()
     {
-        var links = await analyticsService.GetTopPerformingAsync();
+        var entities = await analyticsService.GetTopPerformingAsync();
 
-        if (links == null || links.Count == 0)
-        {
-            return NotFound("No links found for the specified email.");
-        }
+        var links = entities?
+            .Select(s => new TopShortLinkDto
+            {
+                ShortCode = s.ShortCode,
+                Url = s.Url,
+                Score = s.Score,
+                Clicks = s.Clicks,
+                LastClickedAt = s.LastClickAt
+            })
+            .ToList() ?? new List<TopShortLinkDto>();
 
         return Ok(links);
     }
