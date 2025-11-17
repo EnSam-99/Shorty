@@ -1,6 +1,8 @@
 ﻿@page "/admin"
+@rendermode InteractiveServer
 @using Shorty.Domain.Models.Response
 @inject HttpClient Http
+
 
 <h3>Admin panel</h3>
 
@@ -105,8 +107,12 @@ else
             return;
 
         try
-        {
-            var response = await Http.DeleteAsync($"api/admin/user/{userId}");
+        {           
+            var url = $"api/admin/user/{userId}";
+
+            var response = await Http.DeleteAsync(url);
+            var body = await response.Content.ReadAsStringAsync();
+
             if (response.IsSuccessStatusCode)
             {
                 var user = users.FirstOrDefault(u => u.UserId == userId);
@@ -115,12 +121,12 @@ else
             }
             else
             {
-                error = $"Failed to delete user (code {response.StatusCode})";
+                error = $"Failed to delete user: {(int)response.StatusCode} {response.StatusCode}. Body: {body}";
             }
         }
         catch (Exception ex)
         {
-            error = $"Error deleting user:  {ex.Message}";
+            error = $"Error deleting user: {ex.Message}";
         }
     }
 
