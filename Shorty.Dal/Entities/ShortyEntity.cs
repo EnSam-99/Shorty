@@ -34,4 +34,7 @@ public class ShortyEntity
     public UserEntity User { get; set; }
 
     public ICollection<VisitEntity> Visits { get; set; }
+
+    [MaxLength(256)]
+    public string? QrPath { get; set; }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Shorty.Components;
 using Shorty.Dal;
 using Shorty.Dal.Db.IRepositories;
@@ -8,9 +9,18 @@ using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
 using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
+using Shorty.Middleware;
 using Shorty.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -28,6 +38,8 @@ builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, Sho
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -40,25 +52,27 @@ builder.Services.AddScoped(sp =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-
     app.UseHsts();
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseRouting();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+   .AddInteractiveServerRenderMode();
 
 app.MapControllers();
 
 app.Run();
+
 
