@@ -5,4 +5,5 @@ namespace Shorty.Dal.Repositories.Abstractions;
 public interface IVisitRepository
 {
     public Task AddVisitAsync(VisitEntity entity);
+    public Task AddAutoVisitAsync(int count);
 }

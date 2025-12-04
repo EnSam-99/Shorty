@@ -34,4 +34,14 @@ public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRe
 
         return Redirect(uri.ToString());
     }
+    [HttpPost("add-auto")]
+    public async Task<IActionResult> AutoAddVisits([FromQuery] int count)
+    {
+        if (count <= 0)
+        {
+            return BadRequest("Count must be greater than zero.");
+        }
+        await visitService.AddAutoVisitAsync(count);
+        return Ok($"Successfully added {count} auto visits to each short URL.");
+    }
 }

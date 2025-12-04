@@ -6,6 +6,11 @@ namespace Shorty.Domain.Services;
 
 public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEntity> _shortyRepo, IAnalyticsRepository _analytics) : IVisitService
 {
+    public async Task AddAutoVisitAsync(int count)
+    {
+       await _repo.AddAutoVisitAsync(count);
+    }
+
     public async Task AddVisitAsync(string shortCode)
     {
         if (string.IsNullOrWhiteSpace(shortCode))
