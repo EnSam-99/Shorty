@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<ShortyHistoryEntity> Histories { get; set; }
     public DbSet<VisitEntity> Visits { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
     }

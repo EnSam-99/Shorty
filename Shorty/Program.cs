@@ -32,7 +32,13 @@ builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IAdminRepositoriy, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+
+builder.Services.AddSingleton<IShortyExpiryService, ShortyExpiryService>();
+builder.Services.AddHostedService<ShortyExpiryBackgroundService>();
+
 builder.Services.AddControllers();
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(sp =>

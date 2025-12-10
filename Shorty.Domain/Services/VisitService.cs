@@ -25,7 +25,7 @@ public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEnt
         }
         var visit = new VisitEntity { ShortyId = originalShorty.Id, CreatedDate = DateTime.UtcNow };
         originalShorty.LastClickAt = visit.CreatedDate;
-        originalShorty.Clicks = await _analytics.GetTotalVisitsByIdAsync(originalShorty.Id);
+
         await _repo.AddVisitAsync(visit);
     }
 }

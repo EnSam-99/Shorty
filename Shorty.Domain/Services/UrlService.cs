@@ -4,9 +4,10 @@ using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services;
 
-public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository, IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository) : IUrlService<ShortyEntity>
+public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
+    IShortCodeHistoryRepository<ShortyHistoryEntity> _shortCodeHistoryRepository) : IUrlService<ShortyEntity>
 {
-    public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId)
+    public async Task<ShortyEntity> CreateShortAsync(string originalUrl, int userId, int? expirationHours = null)
     {
 
         if (string.IsNullOrEmpty(originalUrl))
@@ -20,6 +21,11 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         {
             throw new ArgumentException("Url is exist");
         }
+
+		if (expirationHours.HasValue && expirationHours <= 0)
+			throw new ArgumentException("Expiration time must be positive.");
+
+		var expiresAt = DateTime.UtcNow.AddHours(expirationHours ?? 48);
 
         var shorty = new ShortyEntity
         {
@@ -41,6 +47,7 @@ public class UrlService(IShortyUrlRepository<ShortyEntity> _shortyUrlRepository,
         };
         await _shortCodeHistoryRepository.AddHistoryAsync(history);
         return shorty;
+    
     }
 
     public Task<bool> DeactivateByIdAsync(string name)

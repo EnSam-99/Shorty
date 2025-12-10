@@ -18,7 +18,7 @@ public class ShortyEntity
 
     public DateTime ExpiredAt { get; set; }
 
-    public long Clicks { get; set; }
+    public DateTime? ShortyUpdatedDate { get; set; }
 
     public DateTime LastClickAt { get; set; }
     public bool IsActive { get; set; }

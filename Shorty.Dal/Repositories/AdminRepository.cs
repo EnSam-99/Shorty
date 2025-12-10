@@ -23,7 +23,7 @@ public class AdminRepository(AppDbContext _db) : IAdminRepositoriy
                 Email = g.Key.Email,
                 IsAdmin = g.Key.IsAdmin,
                 LinksCount = g.Count(),
-                TotalClicks = g.Sum(x => (long?)x.Clicks) ?? 0,
+                TotalClicks = 0, // todo: assign this 
                 ActiveLinks = g.Count(x => x.IsActive)
             }).Take(50)
             .OrderByDescending(x => x.TotalClicks)

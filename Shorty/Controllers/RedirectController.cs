@@ -32,7 +32,7 @@ public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRe
 
         await visitService.AddVisitAsync(code);
 
-        return Redirect(uri.ToString());
+		return Redirect(uri.ToString());
     }
     [HttpPost("add-auto")]
     public async Task<IActionResult> AutoAddVisits([FromQuery] int count)

@@ -53,8 +53,8 @@ public class AnalyticsRepository(AppDbContext _db) : IAnalyticsRepository
     {
         if (shortyId <= 0)
             throw new ArgumentException("ShortyId must be greater than zero.", nameof(shortyId));
-
-        var isActive = await _db.Shorties.AnyAsync(s => s.Id == shortyId && s.ExpiredAt > s.CreatedAt && s.Clicks > 0);
+       
+        var isActive = await _db.Shorties.AnyAsync(s => s.Id == shortyId && s.ExpiredAt > s.CreatedAt); //&& s.Clicks > 0);  // todo: check click counts > 0
 
         return isActive;
     }
@@ -77,7 +77,7 @@ public class AnalyticsRepository(AppDbContext _db) : IAnalyticsRepository
         foreach (var shorty in shorties)
         {
             var age = now - shorty.CreatedAt;
-            var clicks = shorty.Clicks;
+            var clicks = 0; //todo: assign shorties click's count
             var isActive = await GetActiveShoryLinkAsync(shorty.Id);
 
             shorty.ScoreUpdatedAt = now;

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shorty.Dal;
@@ -11,9 +12,11 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251114185557_RemoveClicksColumn")]
+    partial class RemoveClicksColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +45,8 @@ namespace Shorty.Dal.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LastClickAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<decimal>("Score")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("ScoreUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ShortCode")
                         .IsRequired()
@@ -118,9 +115,6 @@ namespace Shorty.Dal.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

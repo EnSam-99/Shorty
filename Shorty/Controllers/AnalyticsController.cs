@@ -19,10 +19,10 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
                 ShortCode = s.ShortCode,
                 Url = s.Url,
                 Score = s.Score,
-                Clicks = s.Clicks,
+                Clicks = 0,//todo: set actual click count
                 LastClickedAt = s.LastClickAt
             })
-            .ToList() ?? new List<TopShortLinkDto>();
+            .ToList() ?? [];
 
         return Ok(links);
     }
@@ -34,4 +34,26 @@ public class AnalyticsController(IAnalyticsService analyticsService) : Controlle
 
         return Ok();
     }
+
+	[HttpPost("recalculate-scores")]
+	public async Task<IActionResult> RecalculateScores([FromQuery]int defaultBatchSize = 100)
+	{
+		if (defaultBatchSize < 1)
+			return BadRequest("Batch size must be >= 1");
+
+		await analyticsService.RecalculateScoresAsync(defaultBatchSize);
+		return Ok("Scores recalculated successfully.");
+	}
+
+	[HttpGet("top-performance")]
+	public async Task<IActionResult> GetTopPerformance([FromQuery] int limit = 10)
+	{
+		var topShorties = await analyticsService.GetTopShortLinksAsync(limit);
+
+		if (topShorties == null || !topShorties.Any())
+			return NotFound(new { message = "No shorties found." });
+
+		return Ok(topShorties);
+	}
+
 }

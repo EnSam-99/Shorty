@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shorty.Dal;
@@ -11,9 +12,11 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110155852_AddShortyClickCountTable")]
+    partial class AddShortyClickCountTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,6 +25,22 @@ namespace Shorty.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Shorty.Dal.Entities.ShortyClickCount", b =>
+                {
+                    b.Property<int>("ShortyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ShortyId"));
+
+                    b.Property<long>("ClickCount")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ShortyId");
+
+                    b.ToTable("ShortyClickCounts");
+                });
+
             modelBuilder.Entity("Shorty.Dal.Entities.ShortyEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -29,6 +48,9 @@ namespace Shorty.Dal.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("Clicks")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -42,22 +64,13 @@ namespace Shorty.Dal.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LastClickAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<decimal>("Score")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("ScoreUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ShortCode")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
-
-                    b.Property<DateTime?>("ShortyUpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -118,9 +131,6 @@ namespace Shorty.Dal.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

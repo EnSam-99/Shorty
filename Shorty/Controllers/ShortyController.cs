@@ -8,48 +8,55 @@ namespace Shorty.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBase
+public class ShortyController : ControllerBase 
 {
-    [HttpPost("add-shorty")]
-    public async Task<IActionResult> AddShorty([FromBody] CreateShortyRequestDto req)
-    {
+	private readonly IShortyExpiryService shortyExpiryService;
+	private readonly IUrlService<ShortyEntity> service;
 
-        var entity = await _service.CreateShortAsync(req.Url, req.UserId);
-        return Ok(new ShortyDto
-        {
-            Url = entity.Url,
-            ShortUrl = entity.ShortCode,
-            UserId = entity.UserId
-        });
-    }
+	public ShortyController(IUrlService<ShortyEntity> service, IShortyExpiryService shortyExpiryService)
+	{
+		this.service = service;
+		this.shortyExpiryService = shortyExpiryService;
+	}
 
-    [HttpPatch("update-short")]
-    public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
-    {
+	[HttpPost("add-shorty")]
+	public async Task<IActionResult> AddShorty([FromBody] CreateShortyRequestDto req)
+	{
+		var entity = await service.CreateShortAsync(req.Url, req.UserId);
+		return Ok(new ShortyDto
+		{
+			Url = entity.Url,
+			ShortUrl = entity.ShortCode,
+			UserId = entity.UserId
+		});
+	}
 
-        if (shorty is null)
-            return BadRequest("Body is required.");
+	[HttpPatch("update-short")]
+	public async Task<IActionResult> UpdateShortCode([FromBody] UpdateShortRequestDto shorty)
+	{
+		if (shorty is null)
+			return BadRequest("Body is required.");
 
-        if (shorty.ShortyId == 0)
-            return BadRequest("ShortyId is required.");
+		if (shorty.ShortyId == 0)
+			return BadRequest("ShortyId is required.");
 
-        await _service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
+		await service.UpdateShortCodAsync(shorty.ShortyId, shorty.NewShort);
 
-        return Ok();
-    }
+		return Ok();
+	}
 
-    [HttpGet("all")]
-    public async Task<IActionResult> GetAllShorties()
-    {
-        var list = await _service.GetAllShortCodesAsync();
+	[HttpGet("all")]
+	public async Task<IActionResult> GetAllShorties()
+	{
+		var list = await service.GetAllShortCodesAsync();
 
-        var dto = list.Select(x => new ShortyDto
-        {
-            Id = x.Id,
-            Url = x.Url,
-            ShortUrl = x.ShortCode,
-            UserId = x.UserId
-        });
+		var dto = list.Select(x => new ShortyDto
+		{
+			Id = x.Id,
+			Url = x.Url,
+			ShortUrl = x.ShortCode,
+			UserId = x.UserId
+		});
 
         return Ok(dto);
     }
@@ -57,7 +64,7 @@ public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBa
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteById(int id)
     {
-        var res = await _service.DeleteByIdAsync(id);
+        var res = await service.DeleteByIdAsync(id);
         if (!res)
         {
             return NotFound($"URL with ID {id} not found.");
@@ -70,7 +77,7 @@ public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBa
     [HttpDelete("email/{email}")]
     public async Task<IActionResult> DeleteByEmail(string email)
     {
-        var result = await _service.DeleteByEmailAsync(email);
+        var result = await service.DeleteByEmailAsync(email);
         if (!result)
             return NotFound($"No URLs found for email: {email}");
 
@@ -80,11 +87,29 @@ public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBa
     [HttpPatch("deactivate/{shortyName}")]
     public async Task<IActionResult> DeactivateById(string shortyName)
     {
-        var result = await _service.DeactivateByIdAsync(shortyName);
+        var result = await service.DeactivateByIdAsync(shortyName);
         if (!result)
             return BadRequest($"Cannot deactivate URL with ID {shortyName}. It may not exist or already deactivated.");
 
         return Ok("URL deactivated successfully.");
     }
 
+	[HttpGet("expired")]
+	public async Task<IActionResult> GetExpiredShorties()
+	{
+		var expired = await shortyExpiryService.GetExpiredShortiesAsync();
+		
+		if (!expired.Any())
+			return NotFound("No expired shorties found.");
+
+		var result = expired.Select(x => new ShortyDto
+		{
+			Id = x.Id,
+			Url = x.Url,
+			ShortUrl = x.ShortCode,
+			UserId = x.UserId
+		});
+
+		return Ok(result);
+	}
 }

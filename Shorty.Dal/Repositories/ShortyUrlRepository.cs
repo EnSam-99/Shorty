@@ -114,7 +114,8 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
 
     public Task<List<ShortyEntity>> GetAllShortiesAsync()
     {
-        var all = _context.Shorties.Where(s => s.IsActive || s.ExpiredAt > s.CreatedAt && s.Clicks > 0).OrderByDescending(s => s.Score).Take(50).ToListAsync();
+        // todo: check click counts > 0
+        var all = _context.Shorties.Where(s => s.IsActive || s.ExpiredAt > s.CreatedAt).OrderByDescending(s => s.Score).Take(50).ToListAsync();
         return all;
     }
 }
