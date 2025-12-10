@@ -1,24 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Domain.Services;
 
-public class VisitService(AppDbContext context) : IVisitService
+public class VisitService(IVisitRepository _repo, IShortyUrlRepository<ShortyEntity> _shortyRepo, IAnalyticsRepository _analytics) : IVisitService
 {
+    public async Task AddAutoVisitAsync(int count)
+    {
+       await _repo.AddAutoVisitAsync(count);
+    }
+
     public async Task AddVisitAsync(string shortCode)
     {
-        var shorty = await context.Shorties
-                .FirstOrDefaultAsync(s => s.ShortCode == shortCode);
+        if (string.IsNullOrWhiteSpace(shortCode))
+        {
+            throw new ArgumentException("ShortCode can't be null or empty.", nameof(shortCode));
+        }
+        var originalShorty = await _shortyRepo.GetByShortCodeAsync(shortCode);
 
-        if (shorty == null)
+        if (originalShorty == null)
         {
             return;
         }
-
-        var visit = new VisitEntity { ShortyId = shorty.Id, CreatedDate = DateTime.UtcNow };
-        await context.Visits.AddAsync(visit);
-        await context.SaveChangesAsync();
+        var visit = new VisitEntity { ShortyId = originalShorty.Id, CreatedDate = DateTime.UtcNow };
+        originalShorty.LastClickAt = visit.CreatedDate;
+        originalShorty.Clicks = await _analytics.GetTotalVisitsByIdAsync(originalShorty.Id);
+        await _repo.AddVisitAsync(visit);
     }
 }

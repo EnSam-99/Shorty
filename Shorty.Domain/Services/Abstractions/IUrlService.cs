@@ -6,4 +6,7 @@ public interface IUrlService<T>
     public Task UpdateShortCodAsync(int id, string shortyCode);
     public Task<IEnumerable<T>> GetAllShortCodesAsync();
     public Task<string> GetOriginalUrlAsync(string shortCode);
+    public Task<bool> DeleteByIdAsync(int id);
+    public Task<bool> DeleteByEmailAsync(string email);
+    public Task<bool> DeactivateByIdAsync(string name);
 }

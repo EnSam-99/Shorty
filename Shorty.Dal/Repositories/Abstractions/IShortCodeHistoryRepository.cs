@@ -1,4 +1,4 @@
-﻿namespace Shorty.Dal.Db.IRepositories;
+﻿namespace Shorty.Dal.Repositories.Abstractions;
 
 public interface IShortCodeHistoryRepository<T>
 {

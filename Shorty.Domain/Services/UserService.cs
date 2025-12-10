@@ -1,5 +1,5 @@
-﻿using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Entities;
+﻿using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Services;
@@ -21,13 +21,14 @@ public class UserService(IUserRepository<UserEntity> _userRepository) : IUserSer
 
         if (exist)
         {
-            throw new ArgumentException(" User is Exists");
+            throw new ArgumentException("User is Exists");
         }
 
         var user = new UserEntity
         {
             Name = userName,
-            Email = email
+            Email = email,
+            IsAdmin = false
         };
         await _userRepository.AddUserAsync(user);
         return user;

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Shorty.Components;
 using Shorty.Dal;
-using Shorty.Dal.Db.IRepositories;
-using Shorty.Dal.Db.Repositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services;
 using Shorty.Domain.Services.Abstractions;
 using Shorty.Services;
@@ -27,8 +27,11 @@ builder.Services.AddScoped<IUrlService<ShortyEntity>, UrlService>();
 builder.Services.AddScoped<IShortCodeHistoryRepository<ShortyHistoryEntity>, ShortCodeHistoryRepository>();
 builder.Services.AddScoped<IShortCodeHistoryService, ShortCodeHistoryService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IVisitRepository, VisitRepository>();
+builder.Services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
-
+builder.Services.AddScoped<IAdminRepositoriy, AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 
-namespace Shorty.Dal.Db.Repositories;
+namespace Shorty.Dal.Repositories;
 
 public class UserRepository(AppDbContext _db) : IUserRepository<UserEntity>
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 
-namespace Shorty.Dal.Db.Repositories;
+namespace Shorty.Dal.Repositories;
 
 public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<ShortyEntity>
 {
@@ -20,11 +20,7 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
         var isExists = await _context.Shorties.AnyAsync(u => u.Id == id);
         return isExists;
     }
-    public async Task<List<ShortyEntity>> GetAllShortyAsync()
-    {
-        var list = await _context.Shorties.OrderByDescending(s => s.Id).ToListAsync();
-        return list;
-    }
+
     public async Task<ShortyEntity> GetByIDAsync(int id)
     {
         var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.Id == id);
@@ -44,6 +40,20 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
 
         return url.Url;
     }
+
+    public async Task<ShortyEntity> GetByShortCodeAsync(string shortCode)
+    {
+        if (string.IsNullOrWhiteSpace(shortCode))
+            throw new ArgumentException("ShortCode is empty.", nameof(shortCode));
+
+        var shorty = await _context.Shorties.FirstOrDefaultAsync(s => s.ShortCode == shortCode);
+
+        if (shorty == null)
+            throw new KeyNotFoundException($"Short code '{shortCode}' not found.");
+
+        return shorty;
+    }
+
     public async Task UpdateAsync(ShortyEntity shortyModel)
     {
         if (shortyModel is null)
@@ -77,8 +87,34 @@ public class ShortyUrlRepository(AppDbContext _context) : IShortyUrlRepository<S
             await _context.Shorties.Where(s => s.ShortCode == shortyName).ExecuteDeleteAsync();
     }
 
-    public async Task DeleteAllNotValidShorties()
+    public async Task<bool> DeleteByIdAsync(int id)
     {
+        if (id <= 0)
+            throw new ArgumentException("Id must be greater than zero.", nameof(id));
 
+        if (!await _context.Shorties.AnyAsync())
+            throw new InvalidOperationException("Shorties list is empty.");
+
+        var shortyForDlelete = await _context.Shorties.Where(s => s.Id == id).ExecuteDeleteAsync();
+        return shortyForDlelete != 0;
+    }
+
+    public async Task<bool> DeleteByEmailAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentException("email is empty. ", nameof(email));
+
+        if (!await _context.Shorties.AnyAsync())
+            throw new InvalidOperationException("Shorties list is empty.");
+
+        var deleteByEmail = await _context.Shorties.Where(u => u.User.Email == email).ExecuteDeleteAsync();
+
+        return deleteByEmail != 0;
+    }
+
+    public Task<List<ShortyEntity>> GetAllShortiesAsync()
+    {
+        var all = _context.Shorties.Where(s => s.IsActive || s.ExpiredAt > s.CreatedAt && s.Clicks > 0).OrderByDescending(s => s.Score).Take(50).ToListAsync();
+        return all;
     }
 }

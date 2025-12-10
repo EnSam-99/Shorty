@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shorty.Dal.Db.IRepositories;
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Services.Abstractions;
 
 namespace Shorty.Controllers;
@@ -33,5 +33,15 @@ public class RedirectController(IUrlService<ShortyEntity> _service, IShortyUrlRe
         await visitService.AddVisitAsync(code);
 
         return Redirect(uri.ToString());
+    }
+    [HttpPost("add-auto")]
+    public async Task<IActionResult> AutoAddVisits([FromQuery] int count)
+    {
+        if (count <= 0)
+        {
+            return BadRequest("Count must be greater than zero.");
+        }
+        await visitService.AddAutoVisitAsync(count);
+        return Ok($"Successfully added {count} auto visits to each short URL.");
     }
 }

@@ -1,5 +1,6 @@
-﻿using Shorty.Dal.Db.IRepositories;
+﻿
 using Shorty.Dal.Entities;
+using Shorty.Dal.Repositories.Abstractions;
 using Shorty.Domain.Models;
 using Shorty.Domain.Services.Abstractions;
 using System.ComponentModel.DataAnnotations;

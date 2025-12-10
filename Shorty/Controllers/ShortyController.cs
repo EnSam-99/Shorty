@@ -53,4 +53,38 @@ public class ShortyController(IUrlService<ShortyEntity> _service) : ControllerBa
 
         return Ok(dto);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        var res = await _service.DeleteByIdAsync(id);
+        if (!res)
+        {
+            return NotFound($"URL with ID {id} not found.");
+        }
+
+        return Ok("URL deleted successfully.");
+    }
+
+
+    [HttpDelete("email/{email}")]
+    public async Task<IActionResult> DeleteByEmail(string email)
+    {
+        var result = await _service.DeleteByEmailAsync(email);
+        if (!result)
+            return NotFound($"No URLs found for email: {email}");
+
+        return Ok($"All URLs for {email} deleted successfully.");
+    }
+
+    [HttpPatch("deactivate/{shortyName}")]
+    public async Task<IActionResult> DeactivateById(string shortyName)
+    {
+        var result = await _service.DeactivateByIdAsync(shortyName);
+        if (!result)
+            return BadRequest($"Cannot deactivate URL with ID {shortyName}. It may not exist or already deactivated.");
+
+        return Ok("URL deactivated successfully.");
+    }
+
 }
