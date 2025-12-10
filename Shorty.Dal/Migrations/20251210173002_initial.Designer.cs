@@ -12,8 +12,8 @@ using Shorty.Dal;
 namespace Shorty.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251108190455_AddNewVisitsTable")]
-    partial class AddNewVisitsTable
+    [Migration("20251210173002_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace Shorty.Dal.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("Clicks")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -48,13 +45,22 @@ namespace Shorty.Dal.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("LastClickAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal>("Score")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("ScoreUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ShortCode")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("ShortyUpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -115,6 +121,9 @@ namespace Shorty.Dal.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

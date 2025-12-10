@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="Properties\launchSettings.json" />
+	  <Content Include="Properties\launchsettings.json" />
 	</ItemGroup>
 
 
